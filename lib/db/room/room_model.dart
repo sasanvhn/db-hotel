@@ -16,14 +16,16 @@ import 'package:floor/floor.dart';
 ])
 class Room {
   Room(
-      {required this.floor,
+      {required this.number,
+      required this.floor,
       required this.price,
       this.capacity = 3,
       required this.type,
-      this.status = 1});
+      required this.status});
 
   @PrimaryKey(autoGenerate: true)
   int? id;
+  int number;
   int floor;
   int price;
   int capacity;
