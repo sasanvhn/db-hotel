@@ -32,3 +32,16 @@ class Room {
   int type;
   int status;
 }
+
+//'CREATE TABLE IF NOT EXISTS `Room`
+// (`id` INTEGER PRIMARY KEY AUTOINCREMENT,
+// `number` INTEGER NOT NULL,
+// `floor` INTEGER NOT NULL,
+// `price` INTEGER NOT NULL,
+// `capacity` INTEGER NOT NULL,
+// `type` INTEGER NOT NULL,
+// `status` INTEGER NOT NULL,
+// FOREIGN KEY (`type`) REFERENCES `RoomType` (`id`)
+// ON UPDATE NO ACTION ON DELETE CASCADE,
+// FOREIGN KEY (`status`) REFERENCES `RoomStatus` (`id`)
+// ON UPDATE NO ACTION ON DELETE CASCADE)');
