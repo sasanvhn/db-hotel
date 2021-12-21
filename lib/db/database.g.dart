@@ -99,6 +99,10 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `Food` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `price` INTEGER NOT NULL, `shopId` INTEGER NOT NULL, `type` INTEGER NOT NULL, `ingredients` TEXT, FOREIGN KEY (`shopId`) REFERENCES `RestaurantCoffeeShop` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Room` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `number` INTEGER NOT NULL, `floor` INTEGER NOT NULL, `price` INTEGER NOT NULL, `capacity` INTEGER NOT NULL, `type` INTEGER NOT NULL, `status` INTEGER NOT NULL, FOREIGN KEY (`type`) REFERENCES `RoomType` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE, FOREIGN KEY (`status`) REFERENCES `RoomStatus` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Order` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `place` INTEGER NOT NULL)');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `FoodOrderRelation` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `food` INTEGER NOT NULL, `order` INTEGER NOT NULL, FOREIGN KEY (`food`) REFERENCES `Food` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`order`) REFERENCES `Order` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
 
         await callback?.onCreate?.call(database, version);
       },
