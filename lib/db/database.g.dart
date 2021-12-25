@@ -107,6 +107,8 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `Reservation` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `reserveDate` TEXT NOT NULL, `checkInDate` TEXT, `checkOutDate` TEXT, `noNights` INTEGER, `bookingStatus` INTEGER NOT NULL, `staff` INTEGER NOT NULL, `guest` INTEGER, `bill` INTEGER, `people` INTEGER NOT NULL, FOREIGN KEY (`bookingStatus`) REFERENCES `BookingStatus` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`staff`) REFERENCES `Staff` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`guest`) REFERENCES `Guest` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`bill`) REFERENCES `Bill` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`people`) REFERENCES `People` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `ReservationDetails` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `rate` INTEGER, `extraFacilities` TEXT, `room` INTEGER NOT NULL, `reservation` INTEGER NOT NULL, FOREIGN KEY (`room`) REFERENCES `Room` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `CleaningServiceModel` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `date` TEXT NOT NULL, `time` TEXT, `description` TEXT, `staff` INTEGER, `reservationDetail` INTEGER NOT NULL, FOREIGN KEY (`staff`) REFERENCES `Staff` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`reservationDetail`) REFERENCES `ReservationDetails` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
 
         await callback?.onCreate?.call(database, version);
       },
