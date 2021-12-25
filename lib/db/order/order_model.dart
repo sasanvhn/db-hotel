@@ -22,4 +22,3 @@ class Order {
 // `reservationDetail` INTEGER NOT NULL,
 // FOREIGN KEY (`reservationDetail`) REFERENCES `ReservationDetails` (`id`)
 // ON UPDATE NO ACTION ON DELETE NO ACTION)'
-
