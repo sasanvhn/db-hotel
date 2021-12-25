@@ -25,3 +25,13 @@ class CleaningServiceModel {
   int? staff;
   int reservationDetail;
 }
+
+// 'CREATE TABLE IF NOT EXISTS `CleaningServiceModel`
+// (`id` INTEGER PRIMARY KEY AUTOINCREMENT,
+// `date` TEXT NOT NULL,
+// `time` TEXT, `description` TEXT, `staff` INTEGER,
+// `reservationDetail` INTEGER NOT NULL,
+// FOREIGN KEY (`staff`) REFERENCES `Staff` (`id`)
+// ON UPDATE NO ACTION ON DELETE NO ACTION,
+// FOREIGN KEY (`reservationDetail`) REFERENCES `ReservationDetails`
+// (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION)'
