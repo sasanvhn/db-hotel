@@ -1,15 +1,19 @@
+import 'package:db_hotel/db/reservation/reservation_model.dart';
 import 'package:floor/floor.dart';
 
-@entity
+@Entity(foreignKeys: [
+  ForeignKey(
+      childColumns: ["reservation"], parentColumns: ["id"], entity: Reservation)
+])
 class Bill {
-  Bill({required this.total, this.status = 1});
+  Bill({required this.total, this.status = 1, required this.reservation});
 
   @PrimaryKey(autoGenerate: true)
   int? id;
   int total;
   int status;
+  int reservation;
 }
-
 
 // 'CREATE TABLE IF NOT EXISTS `Bill`
 // (`id` INTEGER PRIMARY KEY AUTOINCREMENT,
