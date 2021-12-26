@@ -2,7 +2,9 @@ import 'package:db_hotel/widgets/styles/my_styles.dart';
 import 'package:flutter/material.dart';
 
 class FirstScreen extends StatefulWidget {
-  const FirstScreen({Key? key}) : super(key: key);
+  const FirstScreen({Key? key, required this.database}) : super(key: key);
+
+  final database;
 
   @override
   _FirstScreenState createState() => _FirstScreenState();
