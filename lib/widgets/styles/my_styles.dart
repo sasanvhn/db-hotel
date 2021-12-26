@@ -6,4 +6,6 @@ class MyStyles {
   static TextStyle bigText28 =
       const TextStyle(fontWeight: FontWeight.w500, fontSize: 28);
   static TextStyle normalText20 = const TextStyle(fontSize: 20);
+  static BoxDecoration roundedBox = BoxDecoration(
+      color: Colors.blueAccent, borderRadius: BorderRadius.circular(15));
 }
