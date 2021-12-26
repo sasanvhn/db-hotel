@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:db_hotel/db/database.dart';
 import 'package:db_hotel/db/guest/guest_model.dart';
 import 'package:db_hotel/screens/first_screen/first_screen.dart';
 import 'package:db_hotel/screens/home_screen/user_home_screen/user_home_screen.dart';
@@ -11,7 +12,7 @@ import '../../../configs.dart';
 class UserAuthScreen extends StatelessWidget {
   UserAuthScreen({Key? key, required this.database}) : super(key: key);
 
-  final database;
+  final AppDatabase database;
 
   final TextEditingController loginNameController = TextEditingController();
   final TextEditingController loginPassController = TextEditingController();

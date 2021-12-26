@@ -13,7 +13,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key, required this.database}) : super(key: key);
-  final database;
+  final AppDatabase database;
 
   @override
   Widget build(BuildContext context) {

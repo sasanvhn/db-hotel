@@ -1,10 +1,11 @@
+import 'package:db_hotel/db/database.dart';
 import 'package:db_hotel/screens/auth_screens/user_auth_screen/user_auth_screen.dart';
 import 'package:db_hotel/widgets/styles/my_styles.dart';
 import 'package:flutter/material.dart';
 
 class FirstScreen extends StatefulWidget {
   const FirstScreen({Key? key, required this.database}) : super(key: key);
-  final database;
+  final AppDatabase database;
 
   @override
   _FirstScreenState createState() => _FirstScreenState();
