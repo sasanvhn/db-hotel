@@ -61,6 +61,8 @@ class _$AppDatabase extends AppDatabase {
     changeListener = listener ?? StreamController<String>.broadcast();
   }
 
+  GuestDao? _guestDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -86,7 +88,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `BookingStatus` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Guest` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `nationalId` TEXT NOT NULL, `gender` TEXT, `address` TEXT NOT NULL, `birthDate` TEXT NOT NULL, `password` TEXT NOT NULL, `phoneNumber` TEXT NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `Guest` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `nationalId` TEXT NOT NULL, `gender` TEXT, `address` TEXT, `birthDate` TEXT, `password` TEXT NOT NULL, `phoneNumber` TEXT NOT NULL)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `RestaurantCoffeeShop` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `type` INTEGER NOT NULL)');
         await database.execute(
@@ -104,7 +106,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `FoodOrderRelation` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `food` INTEGER NOT NULL, `order` INTEGER NOT NULL, FOREIGN KEY (`food`) REFERENCES `Food` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`order`) REFERENCES `Order` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Reservation` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `reserveDate` TEXT NOT NULL, `checkInDate` TEXT, `checkOutDate` TEXT, `noNights` INTEGER, `bookingStatus` INTEGER NOT NULL, `staff` INTEGER NOT NULL, `guest` INTEGER, `bill` INTEGER, `people` INTEGER NOT NULL, FOREIGN KEY (`bookingStatus`) REFERENCES `BookingStatus` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`staff`) REFERENCES `Staff` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`guest`) REFERENCES `Guest` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`bill`) REFERENCES `Bill` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`people`) REFERENCES `People` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+            'CREATE TABLE IF NOT EXISTS `Reservation` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `reserveDate` TEXT NOT NULL, `checkInDate` TEXT, `checkOutDate` TEXT, `noNights` INTEGER, `bookingStatus` INTEGER NOT NULL, `staff` INTEGER NOT NULL, `bill` INTEGER, `guest` INTEGER NOT NULL, FOREIGN KEY (`bookingStatus`) REFERENCES `BookingStatus` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`staff`) REFERENCES `Staff` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`bill`) REFERENCES `Bill` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`guest`) REFERENCES `Guest` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `ReservationDetails` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `rate` INTEGER, `extraFacilities` TEXT, `room` INTEGER NOT NULL, `reservation` INTEGER NOT NULL, FOREIGN KEY (`room`) REFERENCES `Room` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
@@ -114,5 +116,70 @@ class _$AppDatabase extends AppDatabase {
       },
     );
     return sqfliteDatabaseFactory.openDatabase(path, options: databaseOptions);
+  }
+
+  @override
+  GuestDao get guestDao {
+    return _guestDaoInstance ??= _$GuestDao(database, changeListener);
+  }
+}
+
+class _$GuestDao extends GuestDao {
+  _$GuestDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _guestInsertionAdapter = InsertionAdapter(
+            database,
+            'Guest',
+            (Guest item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'nationalId': item.nationalId,
+                  'gender': item.gender,
+                  'address': item.address,
+                  'birthDate': item.birthDate,
+                  'password': item.password,
+                  'phoneNumber': item.phoneNumber
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Guest> _guestInsertionAdapter;
+
+  @override
+  Future<Guest?> getGuest(String nationalID, String password) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Guest where password = ?2 and nationalID = ?1',
+        mapper: (Map<String, Object?> row) => Guest(
+            name: row['name'] as String,
+            nationalId: row['nationalId'] as String,
+            gender: row['gender'] as String?,
+            address: row['address'] as String?,
+            birthDate: row['birthDate'] as String?,
+            password: row['password'] as String,
+            phoneNumber: row['phoneNumber'] as String),
+        arguments: [nationalID, password]);
+  }
+
+  @override
+  Future<Guest?> getGuestByNationalID(String nationalID) async {
+    return _queryAdapter.query('SELECT * FROM Guest where nationalID = ?1',
+        mapper: (Map<String, Object?> row) => Guest(
+            name: row['name'] as String,
+            nationalId: row['nationalId'] as String,
+            gender: row['gender'] as String?,
+            address: row['address'] as String?,
+            birthDate: row['birthDate'] as String?,
+            password: row['password'] as String,
+            phoneNumber: row['phoneNumber'] as String),
+        arguments: [nationalID]);
+  }
+
+  @override
+  Future<void> insertGuest(Guest guest) async {
+    await _guestInsertionAdapter.insert(guest, OnConflictStrategy.abort);
   }
 }

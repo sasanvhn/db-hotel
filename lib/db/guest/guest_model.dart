@@ -6,8 +6,8 @@ class Guest {
       {required this.name,
       required this.nationalId,
       this.gender,
-      required this.address,
-      required this.birthDate,
+      this.address,
+      this.birthDate,
       required this.password,
       required this.phoneNumber});
 
@@ -16,19 +16,18 @@ class Guest {
   String name;
   String nationalId;
   String? gender;
-  String address;
-  String birthDate;
+  String? address;
+  String? birthDate;
   String password;
   String phoneNumber;
 }
-
 
 // 'CREATE TABLE IF NOT EXISTS `Guest`
 // (`id` INTEGER PRIMARY KEY AUTOINCREMENT,
 // `name` TEXT NOT NULL,
 // `nationalId` TEXT NOT NULL,
 // `gender` TEXT,
-// `address` TEXT NOT NULL,
-// `birthDate` TEXT NOT NULL,
+// `address` TEXT,
+// `birthDate` TEXT,
 // `password` TEXT NOT NULL,
 // `phoneNumber` TEXT NOT NULL)'

@@ -11,20 +11,18 @@ import 'package:floor/floor.dart';
       parentColumns: ["id"],
       entity: BookingStatus),
   ForeignKey(childColumns: ["staff"], parentColumns: ["id"], entity: Staff),
-  ForeignKey(childColumns: ["guest"], parentColumns: ["id"], entity: Guest),
   ForeignKey(childColumns: ["bill"], parentColumns: ["id"], entity: Bill),
-  ForeignKey(childColumns: ["people"], parentColumns: ["id"], entity: People),
+  ForeignKey(childColumns: ["guest"], parentColumns: ["id"], entity: Guest),
 ])
 class Reservation {
   Reservation(
-      {required this.people,
+      {required this.guest,
       required this.reserveDate,
       this.checkInDate,
       this.checkOutDate,
       this.noNights,
       required this.bookingStatus,
       required this.staff,
-      this.guest,
       this.bill});
 
   @PrimaryKey(autoGenerate: true)
@@ -35,9 +33,8 @@ class Reservation {
   int? noNights;
   int bookingStatus;
   int staff;
-  int? guest;
   int? bill;
-  int people;
+  int guest;
 }
 
 // 'CREATE TABLE IF NOT EXISTS `Reservation`
@@ -46,15 +43,12 @@ class Reservation {
 // `checkInDate` TEXT, `checkOutDate` TEXT,
 // `noNights` INTEGER, `bookingStatus` INTEGER NOT NULL,
 // `staff` INTEGER NOT NULL,
-// `guest` INTEGER, `bill` INTEGER,
-// `people` INTEGER NOT NULL,
+// `guest` INTEGER NOT NULL,
 // FOREIGN KEY (`bookingStatus`) REFERENCES `BookingStatus` (`id`)
 // ON UPDATE NO ACTION ON DELETE NO ACTION,
 // FOREIGN KEY (`staff`) REFERENCES `Staff` (`id`)
 // ON UPDATE NO ACTION ON DELETE NO ACTION,
-// FOREIGN KEY (`guest`) REFERENCES `Guest` (`id`)
-// ON UPDATE NO ACTION ON DELETE NO ACTION,
 // FOREIGN KEY (`bill`) REFERENCES `Bill` (`id`)
 // ON UPDATE NO ACTION ON DELETE NO ACTION,
-// FOREIGN KEY (`people`) REFERENCES `People` (`id`)
+// FOREIGN KEY (`guest`) REFERENCES `Guest` (`id`)
 // ON UPDATE NO ACTION ON DELETE NO ACTION)'

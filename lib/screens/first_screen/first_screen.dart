@@ -1,9 +1,9 @@
+import 'package:db_hotel/screens/auth_screens/user_auth_screen/user_auth_screen.dart';
 import 'package:db_hotel/widgets/styles/my_styles.dart';
 import 'package:flutter/material.dart';
 
 class FirstScreen extends StatefulWidget {
   const FirstScreen({Key? key, required this.database}) : super(key: key);
-
   final database;
 
   @override
@@ -32,28 +32,45 @@ class _FirstScreenState extends State<FirstScreen> {
               spacing: 20,
               runSpacing: 20,
               children: [
-                Container(
-                  width: 300,
-                  height: 100,
-                  decoration: MyStyles.roundedBox,
-                  child: const Center(
-                    child: Text("User"),
+                InkWell(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserAuthScreen(
+                                database: widget.database,
+                              ))),
+                  child: Container(
+                    width: 300,
+                    height: 100,
+                    decoration: MyStyles.roundedBox,
+                    child: Center(
+                      child: Text(
+                        "User",
+                        style: MyStyles.normalText20,
+                      ),
+                    ),
                   ),
                 ),
                 Container(
                   width: 300,
                   height: 100,
                   decoration: MyStyles.roundedBox,
-                  child: const Center(
-                    child: Text("Staff"),
+                  child: Center(
+                    child: Text(
+                      "Staff",
+                      style: MyStyles.normalText20,
+                    ),
                   ),
                 ),
                 Container(
                   width: 300,
                   height: 100,
                   decoration: MyStyles.roundedBox,
-                  child: const Center(
-                    child: Text("Admin"),
+                  child: Center(
+                    child: Text(
+                      "Admin",
+                      style: MyStyles.normalText20,
+                    ),
                   ),
                 ),
               ],
