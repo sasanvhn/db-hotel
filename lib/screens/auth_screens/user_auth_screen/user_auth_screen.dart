@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:db_hotel/db/guest/guest_model.dart';
 import 'package:db_hotel/screens/first_screen/first_screen.dart';
+import 'package:db_hotel/screens/home_screen/user_home_screen/user_home_screen.dart';
 import 'package:db_hotel/widgets/custom_appbar/custom_appbar.dart';
 import 'package:db_hotel/widgets/styles/my_styles.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,7 @@ class UserAuthScreen extends StatelessWidget {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => FirstScreen(database: database)));
+              builder: (context) => UserHomeScreen(database: database)));
     }
   }
 
@@ -70,7 +71,7 @@ class UserAuthScreen extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => FirstScreen(database: database)));
+                builder: (context) => UserHomeScreen(database: database)));
       }
     }
     if (guest != null) {
