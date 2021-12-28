@@ -3,7 +3,8 @@ import 'package:floor/floor.dart';
 @entity
 class Guest {
   Guest(
-      {required this.name,
+      {this.id,
+      required this.name,
       required this.nationalId,
       this.gender,
       this.address,

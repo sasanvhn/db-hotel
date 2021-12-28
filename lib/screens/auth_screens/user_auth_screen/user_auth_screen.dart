@@ -34,10 +34,11 @@ class UserAuthScreen extends StatelessWidget {
     log("guest is found: ${guest != null}", name: "LOGIN");
     if (guest != null) {
       Configs.guest = guest;
-      Navigator.push(
+      Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-              builder: (context) => UserHomeScreen(database: database)));
+              builder: (context) => UserHomeScreen(database: database)),
+          (route) => false);
     }
   }
 
@@ -69,10 +70,11 @@ class UserAuthScreen extends StatelessWidget {
       if (guest != null) {
         Configs.guest = guest2;
 
-        Navigator.push(
+        Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-                builder: (context) => UserHomeScreen(database: database)));
+                builder: (context) => UserHomeScreen(database: database)),
+            (route) => false);
       }
     }
     if (guest != null) {

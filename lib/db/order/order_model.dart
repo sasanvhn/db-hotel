@@ -8,7 +8,7 @@ import 'package:floor/floor.dart';
       entity: ReservationDetails)
 ])
 class Order {
-  Order({required this.place, required this.reservationDetail});
+  Order({this.id, required this.place, required this.reservationDetail});
 
   @PrimaryKey(autoGenerate: true)
   int? id;

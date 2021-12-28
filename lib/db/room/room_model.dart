@@ -16,7 +16,8 @@ import 'package:floor/floor.dart';
 ])
 class Room {
   Room(
-      {required this.number,
+      {this.id,
+      required this.number,
       required this.floor,
       required this.price,
       this.capacity = 3,

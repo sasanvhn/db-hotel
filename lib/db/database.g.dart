@@ -63,6 +63,14 @@ class _$AppDatabase extends AppDatabase {
 
   GuestDao? _guestDaoInstance;
 
+  RoomTypeDao? _roomTypeDaoInstance;
+
+  RoomStatusDao? _roomStatusDaoInstance;
+
+  RoomDao? _roomDaoInstance;
+
+  GeneralDao? _generalDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -121,6 +129,26 @@ class _$AppDatabase extends AppDatabase {
   @override
   GuestDao get guestDao {
     return _guestDaoInstance ??= _$GuestDao(database, changeListener);
+  }
+
+  @override
+  RoomTypeDao get roomTypeDao {
+    return _roomTypeDaoInstance ??= _$RoomTypeDao(database, changeListener);
+  }
+
+  @override
+  RoomStatusDao get roomStatusDao {
+    return _roomStatusDaoInstance ??= _$RoomStatusDao(database, changeListener);
+  }
+
+  @override
+  RoomDao get roomDao {
+    return _roomDaoInstance ??= _$RoomDao(database, changeListener);
+  }
+
+  @override
+  GeneralDao get generalDao {
+    return _generalDaoInstance ??= _$GeneralDao(database, changeListener);
   }
 }
 
@@ -181,5 +209,188 @@ class _$GuestDao extends GuestDao {
   @override
   Future<void> insertGuest(Guest guest) async {
     await _guestInsertionAdapter.insert(guest, OnConflictStrategy.abort);
+  }
+}
+
+class _$RoomTypeDao extends RoomTypeDao {
+  _$RoomTypeDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _roomTypeInsertionAdapter = InsertionAdapter(
+            database,
+            'RoomType',
+            (RoomType item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'numberOfBeds': item.numberOfBeds,
+                  'image': item.image,
+                  'description': item.description
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<RoomType> _roomTypeInsertionAdapter;
+
+  @override
+  Future<RoomType?> getRoomTypeByName(String name) async {
+    return _queryAdapter.query('SELECT * FROM RoomType where name = ?1',
+        mapper: (Map<String, Object?> row) => RoomType(
+            name: row['name'] as String,
+            numberOfBeds: row['numberOfBeds'] as int,
+            image: row['image'] as String,
+            description: row['description'] as String),
+        arguments: [name]);
+  }
+
+  @override
+  Future<void> insertRoomType(RoomType roomType) async {
+    await _roomTypeInsertionAdapter.insert(roomType, OnConflictStrategy.abort);
+  }
+}
+
+class _$RoomStatusDao extends RoomStatusDao {
+  _$RoomStatusDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _roomStatusInsertionAdapter = InsertionAdapter(
+            database,
+            'RoomStatus',
+            (RoomStatus item) =>
+                <String, Object?>{'id': item.id, 'name': item.name});
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<RoomStatus> _roomStatusInsertionAdapter;
+
+  @override
+  Future<RoomStatus?> getRoomStatusByName(String name) async {
+    return _queryAdapter.query('SELECT * FROM RoomStatus where name = ?1',
+        mapper: (Map<String, Object?> row) =>
+            RoomStatus(name: row['name'] as String),
+        arguments: [name]);
+  }
+
+  @override
+  Future<void> insertRoomStatus(RoomStatus roomStatus) async {
+    await _roomStatusInsertionAdapter.insert(
+        roomStatus, OnConflictStrategy.abort);
+  }
+}
+
+class _$RoomDao extends RoomDao {
+  _$RoomDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _roomInsertionAdapter = InsertionAdapter(
+            database,
+            'Room',
+            (Room item) => <String, Object?>{
+                  'id': item.id,
+                  'number': item.number,
+                  'floor': item.floor,
+                  'price': item.price,
+                  'capacity': item.capacity,
+                  'type': item.type,
+                  'status': item.status
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Room> _roomInsertionAdapter;
+
+  @override
+  Future<Room?> getAllRooms() async {
+    return _queryAdapter.query('SELECT * FROM Room',
+        mapper: (Map<String, Object?> row) => Room(
+            number: row['number'] as int,
+            floor: row['floor'] as int,
+            price: row['price'] as int,
+            capacity: row['capacity'] as int,
+            type: row['type'] as int,
+            status: row['status'] as int));
+  }
+
+  @override
+  Future<Room?> getRoomByID(int id) async {
+    return _queryAdapter.query('SELECT * FROM Room where id = ?1',
+        mapper: (Map<String, Object?> row) => Room(
+            number: row['number'] as int,
+            floor: row['floor'] as int,
+            price: row['price'] as int,
+            capacity: row['capacity'] as int,
+            type: row['type'] as int,
+            status: row['status'] as int),
+        arguments: [id]);
+  }
+
+  @override
+  Future<Room?> getRoomsByStatusID(int statusID) async {
+    return _queryAdapter.query('SELECT * FROM Room where status = ?1',
+        mapper: (Map<String, Object?> row) => Room(
+            number: row['number'] as int,
+            floor: row['floor'] as int,
+            price: row['price'] as int,
+            capacity: row['capacity'] as int,
+            type: row['type'] as int,
+            status: row['status'] as int),
+        arguments: [statusID]);
+  }
+
+  @override
+  Future<Room?> getRoomsByTypeID(int typeID) async {
+    return _queryAdapter.query('SELECT * FROM Room where type = ?1',
+        mapper: (Map<String, Object?> row) => Room(
+            number: row['number'] as int,
+            floor: row['floor'] as int,
+            price: row['price'] as int,
+            capacity: row['capacity'] as int,
+            type: row['type'] as int,
+            status: row['status'] as int),
+        arguments: [typeID]);
+  }
+
+  @override
+  Future<Room?> getRoomsByTypeIDAndStatusID(int typeID, int statusID) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Room where type = ?1 and status = ?2',
+        mapper: (Map<String, Object?> row) => Room(
+            number: row['number'] as int,
+            floor: row['floor'] as int,
+            price: row['price'] as int,
+            capacity: row['capacity'] as int,
+            type: row['type'] as int,
+            status: row['status'] as int),
+        arguments: [typeID, statusID]);
+  }
+
+  @override
+  Future<void> insertRoom(Room room) async {
+    await _roomInsertionAdapter.insert(room, OnConflictStrategy.abort);
+  }
+}
+
+class _$GeneralDao extends GeneralDao {
+  _$GeneralDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database);
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  @override
+  Future<void> deleteSome() async {
+    await _queryAdapter
+        .queryNoReturn('DELETE * FROM RoomStatus, RoomType, Room, Guest');
   }
 }

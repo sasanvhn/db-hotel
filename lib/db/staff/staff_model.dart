@@ -3,7 +3,8 @@ import 'package:floor/floor.dart';
 @entity
 class Staff {
   Staff(
-      {this.startDate = "today",
+      {this.id,
+      this.startDate = "today",
       this.salary = "base salary",
       required this.password,
       required this.name,

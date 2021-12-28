@@ -6,7 +6,11 @@ import 'package:floor/floor.dart';
       childColumns: ["reservation"], parentColumns: ["id"], entity: Reservation)
 ])
 class Bill {
-  Bill({required this.total, this.status = 1, required this.reservation});
+  Bill(
+      {this.id,
+      required this.total,
+      this.status = 1,
+      required this.reservation});
 
   @PrimaryKey(autoGenerate: true)
   int? id;

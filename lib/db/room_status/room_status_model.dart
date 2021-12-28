@@ -2,7 +2,7 @@ import 'package:floor/floor.dart';
 
 @entity
 class RoomStatus {
-  RoomStatus({required this.name});
+  RoomStatus({this.id, required this.name});
 
   @PrimaryKey(autoGenerate: true)
   int? id;

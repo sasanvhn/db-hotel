@@ -7,7 +7,7 @@ import '../order/order_model.dart';
   ForeignKey(childColumns: ["order"], parentColumns: ["id"], entity: Order),
 ])
 class FoodOrderRelation {
-  FoodOrderRelation({required this.food, required this.order});
+  FoodOrderRelation({this.id, required this.food, required this.order});
 
   @PrimaryKey(autoGenerate: true)
   int? id;

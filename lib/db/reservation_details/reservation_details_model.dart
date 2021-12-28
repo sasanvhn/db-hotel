@@ -6,7 +6,8 @@ import 'package:floor/floor.dart';
 ])
 class ReservationDetails {
   ReservationDetails(
-      {required this.room,
+      {this.id,
+      required this.room,
       required this.reservation,
       this.rate,
       this.extraFacilities});

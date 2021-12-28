@@ -16,7 +16,8 @@ import 'package:floor/floor.dart';
 ])
 class Reservation {
   Reservation(
-      {required this.guest,
+      {this.id,
+      required this.guest,
       required this.reserveDate,
       this.checkInDate,
       this.checkOutDate,

@@ -10,7 +10,8 @@ import 'package:floor/floor.dart';
 ])
 class Food {
   Food(
-      {required this.name,
+      {this.id,
+      required this.name,
       required this.price,
       required this.shopId,
       required this.type,

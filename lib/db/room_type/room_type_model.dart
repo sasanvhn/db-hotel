@@ -5,7 +5,8 @@ const String desc = "this a base description for the room.";
 @entity
 class RoomType {
   RoomType(
-      {required this.name,
+      {this.id,
+      required this.name,
       required this.numberOfBeds,
       required this.image,
       this.description = desc});

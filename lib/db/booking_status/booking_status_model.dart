@@ -2,7 +2,7 @@ import 'package:floor/floor.dart';
 
 @entity
 class BookingStatus {
-  BookingStatus({required this.name});
+  BookingStatus({this.id, required this.name});
 
   @PrimaryKey(autoGenerate: true)
   int? id;

@@ -2,7 +2,7 @@ import 'package:floor/floor.dart';
 
 @entity
 class RestaurantCoffeeShop {
-  RestaurantCoffeeShop({required this.name, required this.type});
+  RestaurantCoffeeShop({this.id, required this.name, required this.type});
 
   @PrimaryKey(autoGenerate: true)
   int? id;

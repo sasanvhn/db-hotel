@@ -11,7 +11,8 @@ import 'package:floor/floor.dart';
 ])
 class CleaningServiceModel {
   CleaningServiceModel(
-      {required this.reservationDetail,
+      {this.id,
+      required this.reservationDetail,
       required this.date,
       this.time,
       this.staff,

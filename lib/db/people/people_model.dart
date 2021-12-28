@@ -2,7 +2,7 @@ import 'package:floor/floor.dart';
 
 @entity
 class People {
-  People({required this.name, this.gender, required this.nationalId});
+  People({this.id, required this.name, this.gender, required this.nationalId});
 
   @PrimaryKey(autoGenerate: true)
   int? id;
