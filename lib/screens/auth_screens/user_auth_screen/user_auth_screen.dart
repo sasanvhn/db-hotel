@@ -67,7 +67,7 @@ class UserAuthScreen extends StatelessWidget {
           signupIDController.text, signupPassController.text);
       log("guest is created: ${guest2 != null}", name: "SIGNUP");
 
-      if (guest != null) {
+      if (guest2 != null) {
         Configs.guest = guest2;
 
         Navigator.pushAndRemoveUntil(

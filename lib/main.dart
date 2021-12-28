@@ -11,7 +11,7 @@ import 'db/room/room_model.dart';
 void main() async {
   final database =
       await $FloorAppDatabase.databaseBuilder('app_database.db').build();
-  deleteDB(database);
+  // deleteDB(database);
   dbUtil(database);
   runApp(MyApp(
     database: database,
@@ -19,7 +19,7 @@ void main() async {
 }
 
 void deleteDB(AppDatabase database) async {
-  await database.generalDao.deleteSome();
+  // await database.generalDao.deleteSome();
 }
 
 class MyApp extends StatelessWidget {
@@ -82,77 +82,77 @@ void dbUtil(db) async {
   RoomStatus? roomStatusOutOfOrder =
       await db.roomStatusDao.getRoomStatusByName("Out of Order");
 
-  log("room type one bed: ${roomTypeOneBed!.name}", name: "DB UTIL");
+  log("room type one bed: ${roomTypeOneBed!.id}", name: "DB UTIL");
 
   Room? r1 = await db.roomDao.getRoomByID(1);
   Room? r10 = await db.roomDao.getRoomByID(10);
 
-  if (r1 == null && r10 == null) {
-    db.roomDao.insertRoom(Room(
-        number: 1,
-        floor: 1,
-        price: 50,
-        type: roomTypeOneBed.id!,
-        status: roomStatusAvailable!.id!));
-    db.roomDao.insertRoom(Room(
-        number: 2,
-        floor: 1,
-        price: 60,
-        type: roomTypeTwoBed!.id!,
-        status: roomStatusAvailable.id!));
-    db.roomDao.insertRoom(Room(
-        number: 3,
-        floor: 1,
-        price: 70,
-        type: roomTypeThreeBed!.id!,
-        status: roomStatusAvailable.id!));
-    db.roomDao.insertRoom(Room(
-        number: 4,
-        floor: 2,
-        price: 50,
-        type: roomTypeOneBed.id!,
-        status: roomStatusAvailable.id!));
-    db.roomDao.insertRoom(Room(
-        number: 5,
-        floor: 2,
-        price: 60,
-        type: roomTypeTwoBed.id!,
-        status: roomStatusAvailable.id!));
-    db.roomDao.insertRoom(Room(
-        number: 6,
-        floor: 2,
-        price: 70,
-        type: roomTypeThreeBed.id!,
-        status: roomStatusAvailable.id!));
-    db.roomDao.insertRoom(Room(
-        number: 7,
-        floor: 3,
-        price: 50,
-        type: roomTypeOneBed.id!,
-        status: roomStatusFull!.id!));
-    db.roomDao.insertRoom(Room(
-        number: 8,
-        floor: 3,
-        price: 60,
-        type: roomTypeTwoBed.id!,
-        status: roomStatusFull.id!));
-    db.roomDao.insertRoom(Room(
-        number: 9,
-        floor: 3,
-        price: 70,
-        type: roomTypeThreeBed.id!,
-        status: roomStatusFull.id!));
-    db.roomDao.insertRoom(Room(
-        number: 10,
-        floor: 4,
-        price: 50,
-        type: roomTypeOneBed.id!,
-        status: roomStatusOutOfOrder!.id!));
-    db.roomDao.insertRoom(Room(
-        number: 11,
-        floor: 4,
-        price: 60,
-        type: roomTypeTwoBed.id!,
-        status: roomStatusAvailable.id!));
-  }
+  // if (r1 == null && r10 == null) {
+  //   db.roomDao.insertRoom(Room(
+  //       number: 1,
+  //       floor: 1,
+  //       price: 50,
+  //       type: roomTypeOneBed.id!,
+  //       status: roomStatusAvailable!.id!));
+  //   db.roomDao.insertRoom(Room(
+  //       number: 2,
+  //       floor: 1,
+  //       price: 60,
+  //       type: roomTypeTwoBed!.id!,
+  //       status: roomStatusAvailable.id!));
+  //   db.roomDao.insertRoom(Room(
+  //       number: 3,
+  //       floor: 1,
+  //       price: 70,
+  //       type: roomTypeThreeBed!.id!,
+  //       status: roomStatusAvailable.id!));
+  //   db.roomDao.insertRoom(Room(
+  //       number: 4,
+  //       floor: 2,
+  //       price: 50,
+  //       type: roomTypeOneBed.id!,
+  //       status: roomStatusAvailable.id!));
+  //   db.roomDao.insertRoom(Room(
+  //       number: 5,
+  //       floor: 2,
+  //       price: 60,
+  //       type: roomTypeTwoBed.id!,
+  //       status: roomStatusAvailable.id!));
+  //   db.roomDao.insertRoom(Room(
+  //       number: 6,
+  //       floor: 2,
+  //       price: 70,
+  //       type: roomTypeThreeBed.id!,
+  //       status: roomStatusAvailable.id!));
+  //   db.roomDao.insertRoom(Room(
+  //       number: 7,
+  //       floor: 3,
+  //       price: 50,
+  //       type: roomTypeOneBed.id!,
+  //       status: roomStatusFull!.id!));
+  //   db.roomDao.insertRoom(Room(
+  //       number: 8,
+  //       floor: 3,
+  //       price: 60,
+  //       type: roomTypeTwoBed.id!,
+  //       status: roomStatusFull.id!));
+  //   db.roomDao.insertRoom(Room(
+  //       number: 9,
+  //       floor: 3,
+  //       price: 70,
+  //       type: roomTypeThreeBed.id!,
+  //       status: roomStatusFull.id!));
+  //   db.roomDao.insertRoom(Room(
+  //       number: 10,
+  //       floor: 4,
+  //       price: 50,
+  //       type: roomTypeOneBed.id!,
+  //       status: roomStatusOutOfOrder!.id!));
+  //   db.roomDao.insertRoom(Room(
+  //       number: 11,
+  //       floor: 4,
+  //       price: 60,
+  //       type: roomTypeTwoBed.id!,
+  //       status: roomStatusAvailable.id!));
+  // }
 }

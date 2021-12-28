@@ -182,6 +182,7 @@ class _$GuestDao extends GuestDao {
     return _queryAdapter.query(
         'SELECT * FROM Guest where password = ?2 and nationalID = ?1',
         mapper: (Map<String, Object?> row) => Guest(
+            id: row['id'] as int?,
             name: row['name'] as String,
             nationalId: row['nationalId'] as String,
             gender: row['gender'] as String?,
@@ -196,6 +197,7 @@ class _$GuestDao extends GuestDao {
   Future<Guest?> getGuestByNationalID(String nationalID) async {
     return _queryAdapter.query('SELECT * FROM Guest where nationalID = ?1',
         mapper: (Map<String, Object?> row) => Guest(
+            id: row['id'] as int?,
             name: row['name'] as String,
             nationalId: row['nationalId'] as String,
             gender: row['gender'] as String?,
@@ -238,6 +240,7 @@ class _$RoomTypeDao extends RoomTypeDao {
   Future<RoomType?> getRoomTypeByName(String name) async {
     return _queryAdapter.query('SELECT * FROM RoomType where name = ?1',
         mapper: (Map<String, Object?> row) => RoomType(
+            id: row['id'] as int?,
             name: row['name'] as String,
             numberOfBeds: row['numberOfBeds'] as int,
             image: row['image'] as String,
@@ -272,7 +275,7 @@ class _$RoomStatusDao extends RoomStatusDao {
   Future<RoomStatus?> getRoomStatusByName(String name) async {
     return _queryAdapter.query('SELECT * FROM RoomStatus where name = ?1',
         mapper: (Map<String, Object?> row) =>
-            RoomStatus(name: row['name'] as String),
+            RoomStatus(id: row['id'] as int?, name: row['name'] as String),
         arguments: [name]);
   }
 
@@ -308,9 +311,10 @@ class _$RoomDao extends RoomDao {
   final InsertionAdapter<Room> _roomInsertionAdapter;
 
   @override
-  Future<Room?> getAllRooms() async {
-    return _queryAdapter.query('SELECT * FROM Room',
+  Future<List<Room?>?> getAllRooms() async {
+    return _queryAdapter.queryList('SELECT * FROM Room',
         mapper: (Map<String, Object?> row) => Room(
+            id: row['id'] as int?,
             number: row['number'] as int,
             floor: row['floor'] as int,
             price: row['price'] as int,
@@ -323,6 +327,7 @@ class _$RoomDao extends RoomDao {
   Future<Room?> getRoomByID(int id) async {
     return _queryAdapter.query('SELECT * FROM Room where id = ?1',
         mapper: (Map<String, Object?> row) => Room(
+            id: row['id'] as int?,
             number: row['number'] as int,
             floor: row['floor'] as int,
             price: row['price'] as int,
@@ -333,9 +338,10 @@ class _$RoomDao extends RoomDao {
   }
 
   @override
-  Future<Room?> getRoomsByStatusID(int statusID) async {
-    return _queryAdapter.query('SELECT * FROM Room where status = ?1',
+  Future<List<Room?>?> getRoomsByStatusID(int statusID) async {
+    return _queryAdapter.queryList('SELECT * FROM Room where status = ?1',
         mapper: (Map<String, Object?> row) => Room(
+            id: row['id'] as int?,
             number: row['number'] as int,
             floor: row['floor'] as int,
             price: row['price'] as int,
@@ -346,9 +352,10 @@ class _$RoomDao extends RoomDao {
   }
 
   @override
-  Future<Room?> getRoomsByTypeID(int typeID) async {
-    return _queryAdapter.query('SELECT * FROM Room where type = ?1',
+  Future<List<Room?>?> getRoomsByTypeID(int typeID) async {
+    return _queryAdapter.queryList('SELECT * FROM Room where type = ?1',
         mapper: (Map<String, Object?> row) => Room(
+            id: row['id'] as int?,
             number: row['number'] as int,
             floor: row['floor'] as int,
             price: row['price'] as int,
@@ -359,10 +366,12 @@ class _$RoomDao extends RoomDao {
   }
 
   @override
-  Future<Room?> getRoomsByTypeIDAndStatusID(int typeID, int statusID) async {
-    return _queryAdapter.query(
+  Future<List<Room?>?> getRoomsByTypeIDAndStatusID(
+      int typeID, int statusID) async {
+    return _queryAdapter.queryList(
         'SELECT * FROM Room where type = ?1 and status = ?2',
         mapper: (Map<String, Object?> row) => Room(
+            id: row['id'] as int?,
             number: row['number'] as int,
             floor: row['floor'] as int,
             price: row['price'] as int,
@@ -379,18 +388,9 @@ class _$RoomDao extends RoomDao {
 }
 
 class _$GeneralDao extends GeneralDao {
-  _$GeneralDao(this.database, this.changeListener)
-      : _queryAdapter = QueryAdapter(database);
+  _$GeneralDao(this.database, this.changeListener);
 
   final sqflite.DatabaseExecutor database;
 
   final StreamController<String> changeListener;
-
-  final QueryAdapter _queryAdapter;
-
-  @override
-  Future<void> deleteSome() async {
-    await _queryAdapter
-        .queryNoReturn('DELETE * FROM RoomStatus, RoomType, Room, Guest');
-  }
 }
