@@ -1,7 +1,11 @@
 import 'dart:developer';
 
+import 'package:db_hotel/db/booking_status/booking_status_model.dart';
+import 'package:db_hotel/db/reservation/reservation_model.dart';
+import 'package:db_hotel/db/reservation_details/reservation_details_model.dart';
 import 'package:db_hotel/db/room_status/room_status_model.dart';
 import 'package:db_hotel/db/room_type/room_type_model.dart';
+import 'package:db_hotel/db/staff/staff_model.dart';
 import 'package:db_hotel/screens/first_screen/first_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -11,15 +15,37 @@ import 'db/room/room_model.dart';
 void main() async {
   final database =
       await $FloorAppDatabase.databaseBuilder('app_database.db').build();
-  // deleteDB(database);
   dbUtil(database);
+  // deleteReservations(database);
   runApp(MyApp(
     database: database,
   ));
 }
 
-void deleteDB(AppDatabase database) async {
-  // await database.generalDao.deleteSome();
+void deleteReservations(AppDatabase database) async {
+  final List<ReservationDetails>? rds =
+      await database.reservationDetailDao.getAll();
+  int l = await database.reservationDetailDao.deleteReservationDetails(rds!);
+
+  final List<Reservation>? rs = await database.reservationDao.getAll();
+  int rl = await database.reservationDao.deleteReservations(rs!);
+
+  final List<Room> rooms = await database.roomDao.getAll();
+  RoomStatus? b1 =
+      await database.roomStatusDao.getRoomStatusByName("Available");
+  RoomStatus? b3 =
+      await database.roomStatusDao.getRoomStatusByName("Out of Order");
+
+  for (Room i in rooms) {
+    if (i.floor == 3) {
+      i.status = b3!.id!;
+    } else {
+      i.status = b1!.id!;
+    }
+    // print(i.status);
+  }
+  int r = await database.roomDao.updateRooms(rooms);
+  log("lines deleted rd: $l, res: $rl, rooms: $r", name: "DELETE_DB");
 }
 
 class MyApp extends StatelessWidget {
@@ -68,6 +94,22 @@ void dbUtil(db) async {
   RoomStatus? b3 = await db.roomStatusDao.getRoomStatusByName("Out of Order");
   if (b3 == null) {
     db.roomStatusDao.insertRoomStatus(RoomStatus(name: "Out of Order"));
+  }
+
+  BookingStatus? c1 =
+      await db.bookingStatusDao.getBookingStatusByName("Approved");
+  if (c1 == null) {
+    db.bookingStatusDao.insertBookingStatus(BookingStatus(name: "Approved"));
+  }
+  BookingStatus? c2 =
+      await db.bookingStatusDao.getBookingStatusByName("Declined");
+  if (c2 == null) {
+    db.bookingStatusDao.insertBookingStatus(BookingStatus(name: "Declined"));
+  }
+  BookingStatus? c3 =
+      await db.bookingStatusDao.getBookingStatusByName("Waiting");
+  if (c3 == null) {
+    db.bookingStatusDao.insertBookingStatus(BookingStatus(name: "Waiting"));
   }
 
   RoomType? roomTypeOneBed = await db.roomTypeDao.getRoomTypeByName("One Bed");
@@ -155,4 +197,10 @@ void dbUtil(db) async {
   //       type: roomTypeTwoBed.id!,
   //       status: roomStatusAvailable.id!));
   // }
+
+  Staff? s1 = await db.staffDao.getStaffByID(1);
+  if (s1 == null) {
+    Staff s1 = Staff(password: "1", name: "admin", nationalId: "1", email: "a");
+    await db.staffDao.insertStaff(s1);
+  }
 }

@@ -7,7 +7,7 @@ abstract class RoomDao {
   Future<void> insertRoom(Room room);
 
   @Query('SELECT * FROM Room')
-  Future<List<Room?>?> getAllRooms();
+  Future<List<Room>> getAll();
 
   @Query('SELECT * FROM Room where id = :id')
   Future<Room?> getRoomByID(int id);
@@ -20,4 +20,10 @@ abstract class RoomDao {
 
   @Query('SELECT * FROM Room where type = :typeID and status = :statusID')
   Future<List<Room?>?> getRoomsByTypeIDAndStatusID(int typeID, int statusID);
+
+  @update
+  Future<void> updateRoom(Room room);
+
+  @update
+  Future<int> updateRooms(List<Room> rooms);
 }

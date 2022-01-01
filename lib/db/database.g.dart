@@ -71,6 +71,14 @@ class _$AppDatabase extends AppDatabase {
 
   GeneralDao? _generalDaoInstance;
 
+  BookingStatusDao? _bookingStatusDaoInstance;
+
+  ReservationDao? _reservationDaoInstance;
+
+  StaffDao? _staffDaoInstance;
+
+  ReservationDetailDao? _reservationDetailDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -114,7 +122,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `FoodOrderRelation` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `food` INTEGER NOT NULL, `order` INTEGER NOT NULL, FOREIGN KEY (`food`) REFERENCES `Food` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`order`) REFERENCES `Order` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Reservation` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `reserveDate` TEXT NOT NULL, `checkInDate` TEXT, `checkOutDate` TEXT, `noNights` INTEGER, `bookingStatus` INTEGER NOT NULL, `staff` INTEGER NOT NULL, `bill` INTEGER, `guest` INTEGER NOT NULL, FOREIGN KEY (`bookingStatus`) REFERENCES `BookingStatus` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`staff`) REFERENCES `Staff` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`bill`) REFERENCES `Bill` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`guest`) REFERENCES `Guest` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+            'CREATE TABLE IF NOT EXISTS `Reservation` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `reserveDate` TEXT NOT NULL, `checkInDate` TEXT, `checkOutDate` TEXT, `noNights` INTEGER, `bookingStatus` INTEGER NOT NULL, `staff` INTEGER, `bill` INTEGER, `guest` INTEGER NOT NULL, FOREIGN KEY (`bookingStatus`) REFERENCES `BookingStatus` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`staff`) REFERENCES `Staff` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`bill`) REFERENCES `Bill` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`guest`) REFERENCES `Guest` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `ReservationDetails` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `rate` INTEGER, `extraFacilities` TEXT, `room` INTEGER NOT NULL, `reservation` INTEGER NOT NULL, FOREIGN KEY (`room`) REFERENCES `Room` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
@@ -149,6 +157,29 @@ class _$AppDatabase extends AppDatabase {
   @override
   GeneralDao get generalDao {
     return _generalDaoInstance ??= _$GeneralDao(database, changeListener);
+  }
+
+  @override
+  BookingStatusDao get bookingStatusDao {
+    return _bookingStatusDaoInstance ??=
+        _$BookingStatusDao(database, changeListener);
+  }
+
+  @override
+  ReservationDao get reservationDao {
+    return _reservationDaoInstance ??=
+        _$ReservationDao(database, changeListener);
+  }
+
+  @override
+  StaffDao get staffDao {
+    return _staffDaoInstance ??= _$StaffDao(database, changeListener);
+  }
+
+  @override
+  ReservationDetailDao get reservationDetailDao {
+    return _reservationDetailDaoInstance ??=
+        _$ReservationDetailDao(database, changeListener);
   }
 }
 
@@ -300,6 +331,19 @@ class _$RoomDao extends RoomDao {
                   'capacity': item.capacity,
                   'type': item.type,
                   'status': item.status
+                }),
+        _roomUpdateAdapter = UpdateAdapter(
+            database,
+            'Room',
+            ['id'],
+            (Room item) => <String, Object?>{
+                  'id': item.id,
+                  'number': item.number,
+                  'floor': item.floor,
+                  'price': item.price,
+                  'capacity': item.capacity,
+                  'type': item.type,
+                  'status': item.status
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -310,8 +354,10 @@ class _$RoomDao extends RoomDao {
 
   final InsertionAdapter<Room> _roomInsertionAdapter;
 
+  final UpdateAdapter<Room> _roomUpdateAdapter;
+
   @override
-  Future<List<Room?>?> getAllRooms() async {
+  Future<List<Room>> getAll() async {
     return _queryAdapter.queryList('SELECT * FROM Room',
         mapper: (Map<String, Object?> row) => Room(
             id: row['id'] as int?,
@@ -385,6 +431,17 @@ class _$RoomDao extends RoomDao {
   Future<void> insertRoom(Room room) async {
     await _roomInsertionAdapter.insert(room, OnConflictStrategy.abort);
   }
+
+  @override
+  Future<void> updateRoom(Room room) async {
+    await _roomUpdateAdapter.update(room, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<int> updateRooms(List<Room> rooms) {
+    return _roomUpdateAdapter.updateListAndReturnChangedRows(
+        rooms, OnConflictStrategy.abort);
+  }
 }
 
 class _$GeneralDao extends GeneralDao {
@@ -393,4 +450,274 @@ class _$GeneralDao extends GeneralDao {
   final sqflite.DatabaseExecutor database;
 
   final StreamController<String> changeListener;
+}
+
+class _$BookingStatusDao extends BookingStatusDao {
+  _$BookingStatusDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _bookingStatusInsertionAdapter = InsertionAdapter(
+            database,
+            'BookingStatus',
+            (BookingStatus item) =>
+                <String, Object?>{'id': item.id, 'name': item.name});
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<BookingStatus> _bookingStatusInsertionAdapter;
+
+  @override
+  Future<BookingStatus?> getBookingStatusByName(String name) async {
+    return _queryAdapter.query('SELECT * FROM BookingStatus where name = ?1',
+        mapper: (Map<String, Object?> row) =>
+            BookingStatus(id: row['id'] as int?, name: row['name'] as String),
+        arguments: [name]);
+  }
+
+  @override
+  Future<void> insertBookingStatus(BookingStatus roomStatus) async {
+    await _bookingStatusInsertionAdapter.insert(
+        roomStatus, OnConflictStrategy.abort);
+  }
+}
+
+class _$ReservationDao extends ReservationDao {
+  _$ReservationDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _reservationInsertionAdapter = InsertionAdapter(
+            database,
+            'Reservation',
+            (Reservation item) => <String, Object?>{
+                  'id': item.id,
+                  'reserveDate': item.reserveDate,
+                  'checkInDate': item.checkInDate,
+                  'checkOutDate': item.checkOutDate,
+                  'noNights': item.noNights,
+                  'bookingStatus': item.bookingStatus,
+                  'staff': item.staff,
+                  'bill': item.bill,
+                  'guest': item.guest
+                }),
+        _reservationUpdateAdapter = UpdateAdapter(
+            database,
+            'Reservation',
+            ['id'],
+            (Reservation item) => <String, Object?>{
+                  'id': item.id,
+                  'reserveDate': item.reserveDate,
+                  'checkInDate': item.checkInDate,
+                  'checkOutDate': item.checkOutDate,
+                  'noNights': item.noNights,
+                  'bookingStatus': item.bookingStatus,
+                  'staff': item.staff,
+                  'bill': item.bill,
+                  'guest': item.guest
+                }),
+        _reservationDeletionAdapter = DeletionAdapter(
+            database,
+            'Reservation',
+            ['id'],
+            (Reservation item) => <String, Object?>{
+                  'id': item.id,
+                  'reserveDate': item.reserveDate,
+                  'checkInDate': item.checkInDate,
+                  'checkOutDate': item.checkOutDate,
+                  'noNights': item.noNights,
+                  'bookingStatus': item.bookingStatus,
+                  'staff': item.staff,
+                  'bill': item.bill,
+                  'guest': item.guest
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Reservation> _reservationInsertionAdapter;
+
+  final UpdateAdapter<Reservation> _reservationUpdateAdapter;
+
+  final DeletionAdapter<Reservation> _reservationDeletionAdapter;
+
+  @override
+  Future<Reservation?> getReservationByDetails(
+      int guestID, String reserveDate, String checkInDate, int noNights) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Reservation where guest = ?1 and reserveDate = ?2 and checkInDate = ?3 and noNights = ?4',
+        mapper: (Map<String, Object?> row) => Reservation(id: row['id'] as int?, guest: row['guest'] as int, reserveDate: row['reserveDate'] as String, checkInDate: row['checkInDate'] as String?, checkOutDate: row['checkOutDate'] as String?, noNights: row['noNights'] as int?, bookingStatus: row['bookingStatus'] as int, staff: row['staff'] as int?, bill: row['bill'] as int?),
+        arguments: [guestID, reserveDate, checkInDate, noNights]);
+  }
+
+  @override
+  Future<Reservation?> getReservationByID(int id) async {
+    return _queryAdapter.query('SELECT * FROM Reservation where id = ?1',
+        mapper: (Map<String, Object?> row) => Reservation(
+            id: row['id'] as int?,
+            guest: row['guest'] as int,
+            reserveDate: row['reserveDate'] as String,
+            checkInDate: row['checkInDate'] as String?,
+            checkOutDate: row['checkOutDate'] as String?,
+            noNights: row['noNights'] as int?,
+            bookingStatus: row['bookingStatus'] as int,
+            staff: row['staff'] as int?,
+            bill: row['bill'] as int?),
+        arguments: [id]);
+  }
+
+  @override
+  Future<List<Reservation>?> getAll() async {
+    return _queryAdapter.queryList('SELECT * FROM Reservation',
+        mapper: (Map<String, Object?> row) => Reservation(
+            id: row['id'] as int?,
+            guest: row['guest'] as int,
+            reserveDate: row['reserveDate'] as String,
+            checkInDate: row['checkInDate'] as String?,
+            checkOutDate: row['checkOutDate'] as String?,
+            noNights: row['noNights'] as int?,
+            bookingStatus: row['bookingStatus'] as int,
+            staff: row['staff'] as int?,
+            bill: row['bill'] as int?));
+  }
+
+  @override
+  Future<int> insertReservation(Reservation reservation) {
+    return _reservationInsertionAdapter.insertAndReturnId(
+        reservation, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> updateReservation(Reservation reservation) async {
+    await _reservationUpdateAdapter.update(
+        reservation, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> deleteReservation(Reservation reservation) async {
+    await _reservationDeletionAdapter.delete(reservation);
+  }
+
+  @override
+  Future<int> deleteReservations(List<Reservation> reservations) {
+    return _reservationDeletionAdapter
+        .deleteListAndReturnChangedRows(reservations);
+  }
+}
+
+class _$StaffDao extends StaffDao {
+  _$StaffDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _staffInsertionAdapter = InsertionAdapter(
+            database,
+            'Staff',
+            (Staff item) => <String, Object?>{
+                  'id': item.id,
+                  'startDate': item.startDate,
+                  'salary': item.salary,
+                  'password': item.password,
+                  'nationalId': item.nationalId,
+                  'name': item.name,
+                  'email': item.email,
+                  'role': item.role
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Staff> _staffInsertionAdapter;
+
+  @override
+  Future<Staff?> getStaffByID(int id) async {
+    return _queryAdapter.query('SELECT * FROM Staff where id = ?1',
+        mapper: (Map<String, Object?> row) => Staff(
+            id: row['id'] as int?,
+            startDate: row['startDate'] as String,
+            salary: row['salary'] as String,
+            password: row['password'] as String,
+            name: row['name'] as String,
+            nationalId: row['nationalId'] as String,
+            email: row['email'] as String,
+            role: row['role'] as int),
+        arguments: [id]);
+  }
+
+  @override
+  Future<void> insertStaff(Staff staff) async {
+    await _staffInsertionAdapter.insert(staff, OnConflictStrategy.abort);
+  }
+}
+
+class _$ReservationDetailDao extends ReservationDetailDao {
+  _$ReservationDetailDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _reservationDetailsInsertionAdapter = InsertionAdapter(
+            database,
+            'ReservationDetails',
+            (ReservationDetails item) => <String, Object?>{
+                  'id': item.id,
+                  'rate': item.rate,
+                  'extraFacilities': item.extraFacilities,
+                  'room': item.room,
+                  'reservation': item.reservation
+                }),
+        _reservationDetailsDeletionAdapter = DeletionAdapter(
+            database,
+            'ReservationDetails',
+            ['id'],
+            (ReservationDetails item) => <String, Object?>{
+                  'id': item.id,
+                  'rate': item.rate,
+                  'extraFacilities': item.extraFacilities,
+                  'room': item.room,
+                  'reservation': item.reservation
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<ReservationDetails>
+      _reservationDetailsInsertionAdapter;
+
+  final DeletionAdapter<ReservationDetails> _reservationDetailsDeletionAdapter;
+
+  @override
+  Future<List<ReservationDetails>?> getAll() async {
+    return _queryAdapter.queryList('SELECT * FROM ReservationDetails',
+        mapper: (Map<String, Object?> row) => ReservationDetails(
+            id: row['id'] as int?,
+            room: row['room'] as int,
+            reservation: row['reservation'] as int,
+            rate: row['rate'] as int?,
+            extraFacilities: row['extraFacilities'] as String?));
+  }
+
+  @override
+  Future<void> insertReservationDetail(
+      ReservationDetails reservationDetail) async {
+    await _reservationDetailsInsertionAdapter.insert(
+        reservationDetail, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> deleteReservationDetail(
+      ReservationDetails reservationDetails) async {
+    await _reservationDetailsDeletionAdapter.delete(reservationDetails);
+  }
+
+  @override
+  Future<int> deleteReservationDetails(
+      List<ReservationDetails> reservationDetails) {
+    return _reservationDetailsDeletionAdapter
+        .deleteListAndReturnChangedRows(reservationDetails);
+  }
 }

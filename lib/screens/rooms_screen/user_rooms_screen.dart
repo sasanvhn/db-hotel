@@ -4,6 +4,7 @@ import 'package:db_hotel/db/database.dart';
 import 'package:db_hotel/db/room/room_model.dart';
 import 'package:db_hotel/db/room_status/room_status_model.dart';
 import 'package:db_hotel/db/room_type/room_type_model.dart';
+import 'package:db_hotel/screens/reserve_screen/reserve_screen.dart';
 import 'package:db_hotel/widgets/custom_appbar/custom_appbar.dart';
 import 'package:db_hotel/widgets/home_floating_button/home_floating_button.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,12 @@ class UserRoomsScreen extends StatefulWidget {
 
 class _UserRoomsScreenState extends State<UserRoomsScreen> {
   String dropDownVal = "All";
+
+  void callback() {
+    setState(() {
+      log("Screen Refreshed", name: "ROOMS_SCREEN");
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,46 +103,65 @@ class _UserRoomsScreenState extends State<UserRoomsScreen> {
                   return const CircularProgressIndicator();
                 }
                 if (snapshot.connectionState == ConnectionState.done) {
-                  return DataTable(
-                      columns: const [
-                        DataColumn(label: Center(child: Text("Number"))),
-                        DataColumn(label: Center(child: Text("Floor"))),
-                        DataColumn(label: Center(child: Text("Price"))),
-                        DataColumn(label: Center(child: Text("Max Capacity"))),
-                        DataColumn(label: Center(child: Text("Type"))),
-                        DataColumn(label: Center(child: Text(" "))),
-                      ],
-                      rows: List.generate(
-                          snapshot.data!.length,
-                          (index) => DataRow(cells: [
-                                DataCell(Center(
-                                  child: Text(
-                                      snapshot.data![index]!.number.toString()),
-                                )),
-                                DataCell(Center(
-                                  child: Text(
-                                      snapshot.data![index]!.floor.toString()),
-                                )),
-                                DataCell(Center(
-                                  child: Text(
-                                      snapshot.data![index]!.price.toString()),
-                                )),
-                                DataCell(Center(
-                                  child: Text(snapshot.data![index]!.capacity
-                                      .toString()),
-                                )),
-                                DataCell(Center(
-                                  child: Text(
-                                      snapshot.data![index]!.type.toString() +
-                                          " Beds"),
-                                )),
-                                DataCell(Center(
-                                  child: TextButton(
-                                    onPressed: () {},
-                                    child: const Text("Reserve"),
-                                  ),
-                                )),
-                              ])));
+                  return Expanded(
+                    child: SingleChildScrollView(
+                      child: DataTable(
+                          columns: const [
+                            DataColumn(label: Center(child: Text("Number"))),
+                            DataColumn(label: Center(child: Text("Floor"))),
+                            DataColumn(label: Center(child: Text("Price"))),
+                            DataColumn(
+                                label: Center(child: Text("Max Capacity"))),
+                            DataColumn(label: Center(child: Text("Type"))),
+                            DataColumn(label: Center(child: Text(" "))),
+                          ],
+                          rows: List.generate(
+                              snapshot.data!.length,
+                              (index) => DataRow(cells: [
+                                    DataCell(Center(
+                                      child: Text(snapshot.data![index]!.number
+                                          .toString()),
+                                    )),
+                                    DataCell(Center(
+                                      child: Text(snapshot.data![index]!.floor
+                                          .toString()),
+                                    )),
+                                    DataCell(Center(
+                                      child: Text(snapshot.data![index]!.price
+                                          .toString()),
+                                    )),
+                                    DataCell(Center(
+                                      child: Text(snapshot.data![index]!.capacity
+                                          .toString()),
+                                    )),
+                                    DataCell(Center(
+                                      child: Text(
+                                          snapshot.data![index]!.type.toString() +
+                                              " Beds"),
+                                    )),
+                                    DataCell(Center(
+                                      child: TextButton(
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) => AlertDialog(
+                                                    content: Reserve(
+                                                        database: widget.database,
+                                                        roomID: snapshot
+                                                            .data![index]!.id!,
+                                                        callback: callback),
+                                                    contentPadding:
+                                                        const EdgeInsets.all(0),
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                  ));
+                                        },
+                                        child: const Text("Reserve"),
+                                      ),
+                                    )),
+                                  ]))),
+                    ),
+                  );
                 }
                 if (snapshot.hasError) {
                   return const Text("error");

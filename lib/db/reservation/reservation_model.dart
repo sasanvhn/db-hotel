@@ -23,7 +23,7 @@ class Reservation {
       this.checkOutDate,
       this.noNights,
       required this.bookingStatus,
-      required this.staff,
+      this.staff = 1,
       this.bill});
 
   @PrimaryKey(autoGenerate: true)
@@ -33,7 +33,7 @@ class Reservation {
   String? checkOutDate;
   int? noNights;
   int bookingStatus;
-  int staff;
+  int? staff;
   int? bill;
   int guest;
 }
@@ -43,7 +43,7 @@ class Reservation {
 // `reserveDate` TEXT NOT NULL,
 // `checkInDate` TEXT, `checkOutDate` TEXT,
 // `noNights` INTEGER, `bookingStatus` INTEGER NOT NULL,
-// `staff` INTEGER NOT NULL,
+// `staff` INTEGER,
 // `guest` INTEGER NOT NULL,
 // FOREIGN KEY (`bookingStatus`) REFERENCES `BookingStatus` (`id`)
 // ON UPDATE NO ACTION ON DELETE NO ACTION,
