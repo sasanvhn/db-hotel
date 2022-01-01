@@ -8,4 +8,7 @@ abstract class BookingStatusDao {
 
   @Query('SELECT * FROM BookingStatus where name = :name')
   Future<BookingStatus?> getBookingStatusByName(String name);
+
+  @Query('SELECT * FROM BookingStatus where id = :id')
+  Future<BookingStatus?> getBookingStatusByID(int id);
 }

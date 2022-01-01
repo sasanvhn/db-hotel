@@ -478,6 +478,14 @@ class _$BookingStatusDao extends BookingStatusDao {
   }
 
   @override
+  Future<BookingStatus?> getBookingStatusByID(int id) async {
+    return _queryAdapter.query('SELECT * FROM BookingStatus where id = ?1',
+        mapper: (Map<String, Object?> row) =>
+            BookingStatus(id: row['id'] as int?, name: row['name'] as String),
+        arguments: [id]);
+  }
+
+  @override
   Future<void> insertBookingStatus(BookingStatus roomStatus) async {
     await _bookingStatusInsertionAdapter.insert(
         roomStatus, OnConflictStrategy.abort);
@@ -582,6 +590,40 @@ class _$ReservationDao extends ReservationDao {
             bookingStatus: row['bookingStatus'] as int,
             staff: row['staff'] as int?,
             bill: row['bill'] as int?));
+  }
+
+  @override
+  Future<List<Reservation>> getReservationByGuestID(int id) async {
+    return _queryAdapter.queryList('SELECT * FROM Reservation where guest = ?1',
+        mapper: (Map<String, Object?> row) => Reservation(
+            id: row['id'] as int?,
+            guest: row['guest'] as int,
+            reserveDate: row['reserveDate'] as String,
+            checkInDate: row['checkInDate'] as String?,
+            checkOutDate: row['checkOutDate'] as String?,
+            noNights: row['noNights'] as int?,
+            bookingStatus: row['bookingStatus'] as int,
+            staff: row['staff'] as int?,
+            bill: row['bill'] as int?),
+        arguments: [id]);
+  }
+
+  @override
+  Future<List<Reservation>> getReservationByGuestIDAndStatus(
+      int id, int status) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Reservation where guest = ?1 and bookingStatus = ?2',
+        mapper: (Map<String, Object?> row) => Reservation(
+            id: row['id'] as int?,
+            guest: row['guest'] as int,
+            reserveDate: row['reserveDate'] as String,
+            checkInDate: row['checkInDate'] as String?,
+            checkOutDate: row['checkOutDate'] as String?,
+            noNights: row['noNights'] as int?,
+            bookingStatus: row['bookingStatus'] as int,
+            staff: row['staff'] as int?,
+            bill: row['bill'] as int?),
+        arguments: [id, status]);
   }
 
   @override
