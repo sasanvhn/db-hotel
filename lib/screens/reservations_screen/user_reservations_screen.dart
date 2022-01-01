@@ -4,6 +4,7 @@ import 'package:db_hotel/configs.dart';
 import 'package:db_hotel/db/booking_status/booking_status_model.dart';
 import 'package:db_hotel/db/database.dart';
 import 'package:db_hotel/db/reservation/reservation_model.dart';
+import 'package:db_hotel/screens/user_reserved_room_screen/user_reserved_rooms_screen.dart';
 import 'package:db_hotel/widgets/custom_appbar/custom_appbar.dart';
 import 'package:db_hotel/widgets/home_floating_button/home_floating_button.dart';
 import 'package:flutter/material.dart';
@@ -134,22 +135,16 @@ class _UserReservationsScreenState extends State<UserReservationsScreen> {
                                     DataCell(Center(
                                       child: TextButton(
                                         onPressed: () {
-                                          showDialog(
-                                              context: context,
-                                              builder: (context) =>
-                                                  Container());
-                                          // AlertDialog(
-                                          //   content: Reserve(
-                                          //       database:
-                                          //           widget.database,
-                                          //       roomID: snapshot
-                                          //           .data![index]!.id!,
-                                          //       callback: callback),
-                                          //   contentPadding:
-                                          //       const EdgeInsets.all(0),
-                                          //   backgroundColor:
-                                          //       Colors.transparent,
-                                          // ));
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      UserReservedRoomsScreen(
+                                                        database:
+                                                            widget.database,
+                                                        reservationID: snapshot
+                                                            .data![index].id!,
+                                                      )));
                                         },
                                         child: const Text("Rooms"),
                                       ),

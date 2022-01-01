@@ -85,8 +85,9 @@ class UserAuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        titlee: "User Auth Screen",
+      appBar: AppBar(
+        title: const Text("User Auth Screen"),
+        centerTitle: true,
       ),
       body: Center(
         child: Row(

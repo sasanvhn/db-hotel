@@ -26,4 +26,8 @@ abstract class RoomDao {
 
   @update
   Future<int> updateRooms(List<Room> rooms);
+
+  @Query(
+      'SELECT * from Room where id in (SELECT room from ReservationDetails where reservation = :rid)')
+  Future<List<Room>> getRoomsByReservationID(int rid);
 }

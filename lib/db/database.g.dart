@@ -428,6 +428,14 @@ class _$RoomDao extends RoomDao {
   }
 
   @override
+  Future<List<Room>> getRoomsByReservationID(int rid) async {
+    return _queryAdapter.queryList(
+        'SELECT * from Room where id in (SELECT room from ReservationDetails where reservation = ?1)',
+        mapper: (Map<String, Object?> row) => Room(id: row['id'] as int?, number: row['number'] as int, floor: row['floor'] as int, price: row['price'] as int, capacity: row['capacity'] as int, type: row['type'] as int, status: row['status'] as int),
+        arguments: [rid]);
+  }
+
+  @override
   Future<void> insertRoom(Room room) async {
     await _roomInsertionAdapter.insert(room, OnConflictStrategy.abort);
   }
