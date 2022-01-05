@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:db_hotel/db/booking_status/booking_status_model.dart';
 import 'package:db_hotel/db/food/food_model.dart';
+import 'package:db_hotel/db/food_order_relation/food_order_relation_model.dart';
+import 'package:db_hotel/db/order/order_model.dart';
 import 'package:db_hotel/db/reservation/reservation_model.dart';
 import 'package:db_hotel/db/reservation_details/reservation_details_model.dart';
 import 'package:db_hotel/db/resturant_coffee_shop/resturant_coffeeshop_model.dart';
@@ -19,6 +21,7 @@ void main() async {
       await $FloorAppDatabase.databaseBuilder('app_database.db').build();
   dbUtil(database);
   // deleteReservations(database);
+  // deleteOrders(database);
   runApp(MyApp(
     database: database,
   ));
@@ -48,6 +51,17 @@ void deleteReservations(AppDatabase database) async {
   }
   int r = await database.roomDao.updateRooms(rooms);
   log("lines deleted rd: $l, res: $rl, rooms: $r", name: "DELETE_DB");
+}
+
+void deleteOrders(AppDatabase database) async {
+  final List<FoodOrderRelation> a =
+      await database.foodOrderRelationDao.getAll();
+  final int aa =
+      await database.foodOrderRelationDao.deleteFoodOrderRelations(a);
+  final List<Order> rds = await database.orderDao.getAll();
+
+  int l = await database.orderDao.deleteOrders(rds);
+  log("lines deleted rd:  $aa, $l", name: "DELETE_DB");
 }
 
 class MyApp extends StatelessWidget {

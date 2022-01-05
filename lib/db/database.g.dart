@@ -132,7 +132,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Order` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `place` INTEGER NOT NULL, `reservationDetail` INTEGER NOT NULL, FOREIGN KEY (`reservationDetail`) REFERENCES `ReservationDetails` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `FoodOrderRelation` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `food` INTEGER NOT NULL, `order` INTEGER NOT NULL, FOREIGN KEY (`food`) REFERENCES `Food` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`order`) REFERENCES `Order` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+            'CREATE TABLE IF NOT EXISTS `FoodOrderRelation` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `food` INTEGER NOT NULL, `order` INTEGER NOT NULL, FOREIGN KEY (`food`) REFERENCES `Food` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`order`) REFERENCES `Order` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Reservation` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `reserveDate` TEXT NOT NULL, `checkInDate` TEXT, `checkOutDate` TEXT, `noNights` INTEGER, `bookingStatus` INTEGER NOT NULL, `staff` INTEGER, `bill` INTEGER, `guest` INTEGER NOT NULL, FOREIGN KEY (`bookingStatus`) REFERENCES `BookingStatus` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`staff`) REFERENCES `Staff` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`bill`) REFERENCES `Bill` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`guest`) REFERENCES `Guest` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
@@ -1018,6 +1018,19 @@ class _$FoodDao extends FoodDao {
   }
 
   @override
+  Future<Food?> getFoodByID(int id) async {
+    return _queryAdapter.query('SELECT * FROM Food where id = ?1',
+        mapper: (Map<String, Object?> row) => Food(
+            id: row['id'] as int?,
+            name: row['name'] as String,
+            price: row['price'] as int,
+            shopId: row['shopId'] as int,
+            type: row['type'] as int,
+            ingredients: row['ingredients'] as String?),
+        arguments: [id]);
+  }
+
+  @override
   Future<void> insertFood(Food f) async {
     await _foodInsertionAdapter.insert(f, OnConflictStrategy.abort);
   }
@@ -1025,9 +1038,19 @@ class _$FoodDao extends FoodDao {
 
 class _$OrderDao extends OrderDao {
   _$OrderDao(this.database, this.changeListener)
-      : _orderInsertionAdapter = InsertionAdapter(
+      : _queryAdapter = QueryAdapter(database),
+        _orderInsertionAdapter = InsertionAdapter(
             database,
             'Order',
+            (Order item) => <String, Object?>{
+                  'id': item.id,
+                  'place': item.place,
+                  'reservationDetail': item.reservationDetail
+                }),
+        _orderDeletionAdapter = DeletionAdapter(
+            database,
+            'Order',
+            ['id'],
             (Order item) => <String, Object?>{
                   'id': item.id,
                   'place': item.place,
@@ -1038,12 +1061,41 @@ class _$OrderDao extends OrderDao {
 
   final StreamController<String> changeListener;
 
+  final QueryAdapter _queryAdapter;
+
   final InsertionAdapter<Order> _orderInsertionAdapter;
+
+  final DeletionAdapter<Order> _orderDeletionAdapter;
+
+  @override
+  Future<List<Order>> getOrdersByRDID(int id) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM \"Order\" where reservationDetail = ?1',
+        mapper: (Map<String, Object?> row) => Order(
+            id: row['id'] as int?,
+            place: row['place'] as int,
+            reservationDetail: row['reservationDetail'] as int),
+        arguments: [id]);
+  }
+
+  @override
+  Future<List<Order>> getAll() async {
+    return _queryAdapter.queryList('SELECT * FROM \"Order\"',
+        mapper: (Map<String, Object?> row) => Order(
+            id: row['id'] as int?,
+            place: row['place'] as int,
+            reservationDetail: row['reservationDetail'] as int));
+  }
 
   @override
   Future<int> insertOrder(Order r) {
     return _orderInsertionAdapter.insertAndReturnId(
         r, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<int> deleteOrders(List<Order> orders) {
+    return _orderDeletionAdapter.deleteListAndReturnChangedRows(orders);
   }
 }
 
@@ -1053,6 +1105,15 @@ class _$FoodOrderDao extends FoodOrderDao {
         _foodOrderRelationInsertionAdapter = InsertionAdapter(
             database,
             'FoodOrderRelation',
+            (FoodOrderRelation item) => <String, Object?>{
+                  'id': item.id,
+                  'food': item.food,
+                  'order': item.order
+                }),
+        _foodOrderRelationDeletionAdapter = DeletionAdapter(
+            database,
+            'FoodOrderRelation',
+            ['id'],
             (FoodOrderRelation item) => <String, Object?>{
                   'id': item.id,
                   'food': item.food,
@@ -1067,17 +1128,44 @@ class _$FoodOrderDao extends FoodOrderDao {
 
   final InsertionAdapter<FoodOrderRelation> _foodOrderRelationInsertionAdapter;
 
+  final DeletionAdapter<FoodOrderRelation> _foodOrderRelationDeletionAdapter;
+
   @override
-  Future<List<FoodOrderRelation>> getFoodsByOrderID(int order) async {
-    return _queryAdapter.queryList(
-        'SELECT * FROM Food where id in (SELECT food FROM FoodOrderRelation where order = ?1)',
-        mapper: (Map<String, Object?> row) => FoodOrderRelation(id: row['id'] as int?, food: row['food'] as int, order: row['order'] as int),
+  Future<Food?> getFoodsByOrderID(int order) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Food where id = (SELECT food FROM FoodOrderRelation where order = ?1)',
+        mapper: (Map<String, Object?> row) => Food(id: row['id'] as int?, name: row['name'] as String, price: row['price'] as int, shopId: row['shopId'] as int, type: row['type'] as int, ingredients: row['ingredients'] as String?),
         arguments: [order]);
+  }
+
+  @override
+  Future<List<FoodOrderRelation>> getAll() async {
+    return _queryAdapter.queryList('SELECT * FROM FoodOrderRelation',
+        mapper: (Map<String, Object?> row) => FoodOrderRelation(
+            id: row['id'] as int?,
+            food: row['food'] as int,
+            order: row['order'] as int));
+  }
+
+  @override
+  Future<List<FoodOrderRelation>> getFoodOrderRelationByOrderID(int a) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM FoodOrderRelation where \"order\" = ?1',
+        mapper: (Map<String, Object?> row) => FoodOrderRelation(
+            id: row['id'] as int?,
+            food: row['food'] as int,
+            order: row['order'] as int),
+        arguments: [a]);
   }
 
   @override
   Future<void> insertFoodOrderRelation(FoodOrderRelation foodOrder) async {
     await _foodOrderRelationInsertionAdapter.insert(
         foodOrder, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<int> deleteFoodOrderRelations(List<FoodOrderRelation> a) {
+    return _foodOrderRelationDeletionAdapter.deleteListAndReturnChangedRows(a);
   }
 }

@@ -81,9 +81,9 @@ class FoodOrder extends StatelessWidget {
   void _order(context) async {
     ReservationDetails? rd = await database.reservationDetailDao
         .getReservationDetailByResAndRoom(reservationID, roomID);
-
+    log("rd id ${rd!.id}");
     Order o = Order(
-        place: int.parse(placeController.text), reservationDetail: rd!.id!);
+        place: int.parse(placeController.text), reservationDetail: rd.id!);
 
     int o12 = await database.orderDao.insertOrder(o);
 

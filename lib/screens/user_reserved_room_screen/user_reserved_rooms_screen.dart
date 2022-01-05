@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:db_hotel/db/database.dart';
 import 'package:db_hotel/db/room/room_model.dart';
+import 'package:db_hotel/screens/previous_orders_screen/previous_orders_screen.dart';
 import 'package:db_hotel/screens/request_cleaning_screen/request_cleaning_screen.dart';
 import 'package:db_hotel/screens/restaurants_screen/user_restaurants_screen/user_restaurant_screen.dart';
 import 'package:db_hotel/widgets/custom_appbar/custom_appbar.dart';
@@ -92,7 +93,7 @@ class _UserReservedRoomsScreenState extends State<UserReservedRoomsScreen> {
                             DataColumn(label: Center(child: Text("Type"))),
                             DataColumn(label: Center(child: Text(" "))),
                             DataColumn(label: Center(child: Text(" "))),
-                            // DataColumn(label: Center(child: Text(" "))),
+                            DataColumn(label: Center(child: Text(" "))),
                           ],
                           rows: List.generate(
                               snapshot.data!.length,
@@ -158,6 +159,24 @@ class _UserReservedRoomsScreenState extends State<UserReservedRoomsScreen> {
                                                               .database)));
                                         },
                                         child: const Text("Order Food"),
+                                      ),
+                                    )),
+                                    DataCell(Center(
+                                      child: TextButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PreviousOrdersScreen(
+                                                          reservationID: widget
+                                                              .reservationID,
+                                                          roomID: snapshot
+                                                              .data![index].id!,
+                                                          database: widget
+                                                              .database)));
+                                        },
+                                        child: const Text("Previous Orders"),
                                       ),
                                     )),
                                   ]))),

@@ -4,7 +4,11 @@ import '../order/order_model.dart';
 
 @Entity(foreignKeys: [
   ForeignKey(childColumns: ["food"], parentColumns: ["id"], entity: Food),
-  ForeignKey(childColumns: ["order"], parentColumns: ["id"], entity: Order),
+  ForeignKey(
+      childColumns: ["order"],
+      parentColumns: ["id"],
+      entity: Order,
+      onDelete: ForeignKeyAction.cascade),
 ])
 class FoodOrderRelation {
   FoodOrderRelation({this.id, required this.food, required this.order});
