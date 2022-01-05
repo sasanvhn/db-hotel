@@ -1,6 +1,7 @@
 import 'package:db_hotel/db/database.dart';
 import 'package:db_hotel/screens/first_screen/first_screen.dart';
 import 'package:db_hotel/screens/reservations_screen/user_reservations_screen.dart';
+import 'package:db_hotel/screens/restaurants_screen/user_restaurants_screen/user_restaurant_screen.dart';
 import 'package:db_hotel/screens/rooms_screen/user_rooms_screen.dart';
 import 'package:db_hotel/widgets/styles/my_styles.dart';
 import 'package:flutter/material.dart';
@@ -93,6 +94,24 @@ class UserHomeScreen extends StatelessWidget {
                   child: Center(
                     child: Text(
                       "Reservations",
+                      style: MyStyles.normalText20,
+                    ),
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            UserRestaurantsScreen(database: database))),
+                child: Container(
+                  width: 300,
+                  height: 100,
+                  decoration: MyStyles.roundedBox,
+                  child: Center(
+                    child: Text(
+                      "Restaurants | CoffeeShops",
                       style: MyStyles.normalText20,
                     ),
                   ),

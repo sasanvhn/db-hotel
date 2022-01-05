@@ -83,6 +83,14 @@ class _$AppDatabase extends AppDatabase {
 
   PeopleDao? _peopleDaoInstance;
 
+  RestaurantDao? _restaurantDaoInstance;
+
+  FoodDao? _foodDaoInstance;
+
+  OrderDao? _orderDaoInstance;
+
+  FoodOrderDao? _foodOrderRelationDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -195,6 +203,27 @@ class _$AppDatabase extends AppDatabase {
   @override
   PeopleDao get peopleDao {
     return _peopleDaoInstance ??= _$PeopleDao(database, changeListener);
+  }
+
+  @override
+  RestaurantDao get restaurantDao {
+    return _restaurantDaoInstance ??= _$RestaurantDao(database, changeListener);
+  }
+
+  @override
+  FoodDao get foodDao {
+    return _foodDaoInstance ??= _$FoodDao(database, changeListener);
+  }
+
+  @override
+  OrderDao get orderDao {
+    return _orderDaoInstance ??= _$OrderDao(database, changeListener);
+  }
+
+  @override
+  FoodOrderDao get foodOrderRelationDao {
+    return _foodOrderRelationDaoInstance ??=
+        _$FoodOrderDao(database, changeListener);
   }
 }
 
@@ -851,5 +880,204 @@ class _$PeopleDao extends PeopleDao {
   @override
   Future<void> insertGuest(People p) async {
     await _peopleInsertionAdapter.insert(p, OnConflictStrategy.abort);
+  }
+}
+
+class _$RestaurantDao extends RestaurantDao {
+  _$RestaurantDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _restaurantCoffeeShopInsertionAdapter = InsertionAdapter(
+            database,
+            'RestaurantCoffeeShop',
+            (RestaurantCoffeeShop item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'type': item.type
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<RestaurantCoffeeShop>
+      _restaurantCoffeeShopInsertionAdapter;
+
+  @override
+  Future<List<RestaurantCoffeeShop>> getAll() async {
+    return _queryAdapter.queryList('SELECT * FROM RestaurantCoffeeShop',
+        mapper: (Map<String, Object?> row) => RestaurantCoffeeShop(
+            id: row['id'] as int?,
+            name: row['name'] as String,
+            type: row['type'] as int));
+  }
+
+  @override
+  Future<List<RestaurantCoffeeShop>> getRestaurantsByType(int t) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM RestaurantCoffeeShop where type = ?1',
+        mapper: (Map<String, Object?> row) => RestaurantCoffeeShop(
+            id: row['id'] as int?,
+            name: row['name'] as String,
+            type: row['type'] as int),
+        arguments: [t]);
+  }
+
+  @override
+  Future<RestaurantCoffeeShop?> getRestaurantByName(String name) async {
+    return _queryAdapter.query(
+        'SELECT * FROM RestaurantCoffeeShop where name = ?1',
+        mapper: (Map<String, Object?> row) => RestaurantCoffeeShop(
+            id: row['id'] as int?,
+            name: row['name'] as String,
+            type: row['type'] as int),
+        arguments: [name]);
+  }
+
+  @override
+  Future<void> insertRestaurant(RestaurantCoffeeShop r) async {
+    await _restaurantCoffeeShopInsertionAdapter.insert(
+        r, OnConflictStrategy.abort);
+  }
+}
+
+class _$FoodDao extends FoodDao {
+  _$FoodDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _foodInsertionAdapter = InsertionAdapter(
+            database,
+            'Food',
+            (Food item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'price': item.price,
+                  'shopId': item.shopId,
+                  'type': item.type,
+                  'ingredients': item.ingredients
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Food> _foodInsertionAdapter;
+
+  @override
+  Future<List<Food>> getFoodByShopID(int shopID) async {
+    return _queryAdapter.queryList('SELECT * FROM Food where shopId = ?1',
+        mapper: (Map<String, Object?> row) => Food(
+            id: row['id'] as int?,
+            name: row['name'] as String,
+            price: row['price'] as int,
+            shopId: row['shopId'] as int,
+            type: row['type'] as int,
+            ingredients: row['ingredients'] as String?),
+        arguments: [shopID]);
+  }
+
+  @override
+  Future<List<Food>> getFoodByShopIDAndType(int shopID, int t) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Food where shopId = ?1 AND type= ?2',
+        mapper: (Map<String, Object?> row) => Food(
+            id: row['id'] as int?,
+            name: row['name'] as String,
+            price: row['price'] as int,
+            shopId: row['shopId'] as int,
+            type: row['type'] as int,
+            ingredients: row['ingredients'] as String?),
+        arguments: [shopID, t]);
+  }
+
+  @override
+  Future<List<Food>> getAll() async {
+    return _queryAdapter.queryList('SELECT * FROM Food',
+        mapper: (Map<String, Object?> row) => Food(
+            id: row['id'] as int?,
+            name: row['name'] as String,
+            price: row['price'] as int,
+            shopId: row['shopId'] as int,
+            type: row['type'] as int,
+            ingredients: row['ingredients'] as String?));
+  }
+
+  @override
+  Future<void> insertFood(Food f) async {
+    await _foodInsertionAdapter.insert(f, OnConflictStrategy.abort);
+  }
+}
+
+class _$OrderDao extends OrderDao {
+  _$OrderDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _orderInsertionAdapter = InsertionAdapter(
+            database,
+            'Order',
+            (Order item) => <String, Object?>{
+                  'id': item.id,
+                  'place': item.place,
+                  'reservationDetail': item.reservationDetail
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Order> _orderInsertionAdapter;
+
+  @override
+  Future<List<Order>> getOrdersByReservationDetailID(int rd) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Order where reservationDetail = ?1',
+        mapper: (Map<String, Object?> row) => Order(
+            id: row['id'] as int?,
+            place: row['place'] as int,
+            reservationDetail: row['reservationDetail'] as int),
+        arguments: [rd]);
+  }
+
+  @override
+  Future<void> insertOrder(Order r) async {
+    await _orderInsertionAdapter.insert(r, OnConflictStrategy.abort);
+  }
+}
+
+class _$FoodOrderDao extends FoodOrderDao {
+  _$FoodOrderDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _foodOrderRelationInsertionAdapter = InsertionAdapter(
+            database,
+            'FoodOrderRelation',
+            (FoodOrderRelation item) => <String, Object?>{
+                  'id': item.id,
+                  'food': item.food,
+                  'order': item.order
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<FoodOrderRelation> _foodOrderRelationInsertionAdapter;
+
+  @override
+  Future<List<FoodOrderRelation>> getFoodsByOrderID(int order) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Food where id in (SELECT food FROM FoodOrderRelation where order = ?1)',
+        mapper: (Map<String, Object?> row) => FoodOrderRelation(id: row['id'] as int?, food: row['food'] as int, order: row['order'] as int),
+        arguments: [order]);
+  }
+
+  @override
+  Future<void> insertFoodOrderRelation(FoodOrderRelation foodOrder) async {
+    await _foodOrderRelationInsertionAdapter.insert(
+        foodOrder, OnConflictStrategy.abort);
   }
 }

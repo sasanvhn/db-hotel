@@ -1,8 +1,10 @@
 import 'dart:developer';
 
 import 'package:db_hotel/db/booking_status/booking_status_model.dart';
+import 'package:db_hotel/db/food/food_model.dart';
 import 'package:db_hotel/db/reservation/reservation_model.dart';
 import 'package:db_hotel/db/reservation_details/reservation_details_model.dart';
+import 'package:db_hotel/db/resturant_coffee_shop/resturant_coffeeshop_model.dart';
 import 'package:db_hotel/db/room_status/room_status_model.dart';
 import 'package:db_hotel/db/room_type/room_type_model.dart';
 import 'package:db_hotel/db/staff/staff_model.dart';
@@ -66,7 +68,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-void dbUtil(db) async {
+void dbUtil(AppDatabase db) async {
   RoomType? a1 = await db.roomTypeDao.getRoomTypeByName("One Bed");
   if (a1 == null) {
     db.roomTypeDao.insertRoomType(
@@ -202,5 +204,45 @@ void dbUtil(db) async {
   if (s1 == null) {
     Staff s1 = Staff(password: "1", name: "admin", nationalId: "1", email: "a");
     await db.staffDao.insertStaff(s1);
+  }
+
+  List<RestaurantCoffeeShop> rc1 = await db.restaurantDao.getAll();
+  if (rc1.isEmpty) {
+    RestaurantCoffeeShop rc = RestaurantCoffeeShop(name: "Lavia", type: 0);
+    RestaurantCoffeeShop rc2 = RestaurantCoffeeShop(name: "Gisha", type: 1);
+    RestaurantCoffeeShop rc3 = RestaurantCoffeeShop(name: "Zaver", type: 0);
+    await db.restaurantDao.insertRestaurant(rc);
+    await db.restaurantDao.insertRestaurant(rc2);
+    await db.restaurantDao.insertRestaurant(rc3);
+  }
+
+  List<Food> fs = await db.foodDao.getAll();
+  if (fs.isEmpty) {
+    RestaurantCoffeeShop? lavia =
+        await db.restaurantDao.getRestaurantByName("Lavia");
+    RestaurantCoffeeShop? gisha =
+        await db.restaurantDao.getRestaurantByName("Gisha");
+    RestaurantCoffeeShop? zaver =
+        await db.restaurantDao.getRestaurantByName("Zaver");
+    log("zavers id is ${zaver!.id}");
+    Food f1 =
+        Food(name: "Cheese burger", price: 50, shopId: lavia!.id!, type: 0);
+    Food f2 = Food(name: "King burger", price: 70, shopId: lavia.id!, type: 0);
+    Food f3 = Food(name: "Fries", price: 30, shopId: lavia.id!, type: 0);
+    Food f4 =
+        Food(name: "Hot Chocolate", price: 30, shopId: gisha!.id!, type: 1);
+    Food f5 = Food(name: "Cappuccino", price: 30, shopId: gisha.id!, type: 1);
+    Food f6 = Food(name: "Cake", price: 20, shopId: gisha.id!, type: 0);
+    Food f7 = Food(name: "Canol", price: 120, shopId: zaver.id!, type: 0);
+    Food f8 = Food(name: "Pepperoni", price: 100, shopId: zaver.id!, type: 0);
+
+    await db.foodDao.insertFood(f1);
+    await db.foodDao.insertFood(f2);
+    await db.foodDao.insertFood(f3);
+    await db.foodDao.insertFood(f4);
+    await db.foodDao.insertFood(f5);
+    await db.foodDao.insertFood(f6);
+    await db.foodDao.insertFood(f7);
+    await db.foodDao.insertFood(f8);
   }
 }
