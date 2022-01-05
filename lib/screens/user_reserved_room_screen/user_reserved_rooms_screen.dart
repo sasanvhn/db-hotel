@@ -90,7 +90,7 @@ class _UserReservedRoomsScreenState extends State<UserReservedRoomsScreen> {
                                 label: Center(child: Text("Max Capacity"))),
                             DataColumn(label: Center(child: Text("Type"))),
                             DataColumn(label: Center(child: Text(" "))),
-                            DataColumn(label: Center(child: Text(" "))),
+                            // DataColumn(label: Center(child: Text(" "))),
                           ],
                           rows: List.generate(
                               snapshot.data!.length,
@@ -140,29 +140,29 @@ class _UserReservedRoomsScreenState extends State<UserReservedRoomsScreen> {
                                         child: const Text("Request Cleaning"),
                                       ),
                                     )),
-                                    DataCell(Center(
-                                      child: TextButton(
-                                        onPressed: () {
-                                          showDialog(
-                                              context: context,
-                                              builder: (context) =>
-                                                  Container());
-                                          // AlertDialog(
-                                          //   content: Reserve(
-                                          //       database:
-                                          //           widget.database,
-                                          //       roomID: snapshot
-                                          //           .data![index]!.id!,
-                                          //       callback: callback),
-                                          //   contentPadding:
-                                          //       const EdgeInsets.all(0),
-                                          //   backgroundColor:
-                                          //       Colors.transparent,
-                                          // ));
-                                        },
-                                        child: const Text("Add Guest"),
-                                      ),
-                                    )),
+                                    // DataCell(Center(
+                                    //   child: TextButton(
+                                    //     onPressed: () {
+                                    //       showDialog(
+                                    //           context: context,
+                                    //           builder: (context) =>
+                                    //               Container());
+                                    //       // AlertDialog(
+                                    //       //   content: Reserve(
+                                    //       //       database:
+                                    //       //           widget.database,
+                                    //       //       roomID: snapshot
+                                    //       //           .data![index]!.id!,
+                                    //       //       callback: callback),
+                                    //       //   contentPadding:
+                                    //       //       const EdgeInsets.all(0),
+                                    //       //   backgroundColor:
+                                    //       //       Colors.transparent,
+                                    //       // ));
+                                    //     },
+                                    //     child: const Text("Add Guest"),
+                                    //   ),
+                                    // )),
                                   ]))),
                     ),
                   );

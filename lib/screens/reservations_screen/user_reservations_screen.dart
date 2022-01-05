@@ -4,6 +4,7 @@ import 'package:db_hotel/configs.dart';
 import 'package:db_hotel/db/booking_status/booking_status_model.dart';
 import 'package:db_hotel/db/database.dart';
 import 'package:db_hotel/db/reservation/reservation_model.dart';
+import 'package:db_hotel/screens/add_people_screen/add_people_screen.dart';
 import 'package:db_hotel/screens/user_reserved_room_screen/user_reserved_rooms_screen.dart';
 import 'package:db_hotel/widgets/custom_appbar/custom_appbar.dart';
 import 'package:db_hotel/widgets/home_floating_button/home_floating_button.dart';
@@ -90,6 +91,7 @@ class _UserReservationsScreenState extends State<UserReservationsScreen> {
                             DataColumn(label: Center(child: Text("Status"))),
                             DataColumn(label: Center(child: Text(" "))),
                             DataColumn(label: Center(child: Text(" "))),
+                            DataColumn(label: Center(child: Text(" "))),
                           ],
                           rows: List.generate(
                               snapshot.data!.length,
@@ -170,6 +172,28 @@ class _UserReservationsScreenState extends State<UserReservationsScreen> {
                                           // ));
                                         },
                                         child: const Text("Bill"),
+                                      ),
+                                    )),
+                                    DataCell(Center(
+                                      child: TextButton(
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) =>
+                                                  // Container());
+                                                  AlertDialog(
+                                                    content: AddPeople(
+                                                        database:
+                                                            widget.database,
+                                                        reservationID: snapshot
+                                                            .data![index].id!),
+                                                    contentPadding:
+                                                        const EdgeInsets.all(0),
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                  ));
+                                        },
+                                        child: const Text("Add Guest"),
                                       ),
                                     )),
                                   ]))),

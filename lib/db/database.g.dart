@@ -81,6 +81,8 @@ class _$AppDatabase extends AppDatabase {
 
   CleaningServiceDao? _cleaningServiceDaoInstance;
 
+  PeopleDao? _peopleDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -188,6 +190,11 @@ class _$AppDatabase extends AppDatabase {
   CleaningServiceDao get cleaningServiceDao {
     return _cleaningServiceDaoInstance ??=
         _$CleaningServiceDao(database, changeListener);
+  }
+
+  @override
+  PeopleDao get peopleDao {
+    return _peopleDaoInstance ??= _$PeopleDao(database, changeListener);
   }
 }
 
@@ -820,5 +827,29 @@ class _$CleaningServiceDao extends CleaningServiceDao {
       CleaningServiceModel cleaningService) async {
     await _cleaningServiceModelInsertionAdapter.insert(
         cleaningService, OnConflictStrategy.abort);
+  }
+}
+
+class _$PeopleDao extends PeopleDao {
+  _$PeopleDao(this.database, this.changeListener)
+      : _peopleInsertionAdapter = InsertionAdapter(
+            database,
+            'People',
+            (People item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'gender': item.gender,
+                  'nationalId': item.nationalId
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final InsertionAdapter<People> _peopleInsertionAdapter;
+
+  @override
+  Future<void> insertGuest(People p) async {
+    await _peopleInsertionAdapter.insert(p, OnConflictStrategy.abort);
   }
 }

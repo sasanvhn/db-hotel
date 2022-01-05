@@ -4,6 +4,7 @@ import 'package:db_hotel/configs.dart';
 import 'package:db_hotel/db/booking_status/booking_status_model.dart';
 import 'package:db_hotel/db/cleaning_service/cleaning_service_model.dart';
 import 'package:db_hotel/db/database.dart';
+import 'package:db_hotel/db/people/people_model.dart';
 import 'package:db_hotel/db/reservation/reservation_model.dart';
 import 'package:db_hotel/db/reservation_details/reservation_details_model.dart';
 import 'package:db_hotel/db/room/room_model.dart';
@@ -11,20 +12,16 @@ import 'package:db_hotel/db/room_status/room_status_model.dart';
 import 'package:db_hotel/widgets/styles/my_styles.dart';
 import 'package:flutter/material.dart';
 
-class RequestCleaning extends StatelessWidget {
-  RequestCleaning(
-      {Key? key,
-      required this.database,
-      required this.roomID,
-      required this.reservationID})
+class AddPeople extends StatelessWidget {
+  AddPeople({Key? key, required this.database, required this.reservationID})
       : super(key: key);
 
   final AppDatabase database;
-  final int roomID;
   final int reservationID;
 
-  final TextEditingController cleaningDateController = TextEditingController();
-  final TextEditingController cleaningTimeController = TextEditingController();
+  final TextEditingController peopleNameController = TextEditingController();
+  final TextEditingController peopleIDController = TextEditingController();
+  final TextEditingController peopleGenderController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -47,10 +44,10 @@ class RequestCleaning extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Cleaning Date",
+                    "National Code",
                     style: MyStyles.normalText20,
                   ),
-                  TextField(controller: cleaningDateController),
+                  TextField(controller: peopleIDController),
                 ],
               ),
               Column(
@@ -58,21 +55,32 @@ class RequestCleaning extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Cleaning Time",
+                    "Name",
                     style: MyStyles.normalText20,
                   ),
-                  TextField(controller: cleaningTimeController),
+                  TextField(controller: peopleNameController),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Gender",
+                    style: MyStyles.normalText20,
+                  ),
+                  TextField(controller: peopleGenderController),
                 ],
               ),
               Align(
                 alignment: Alignment.bottomRight,
                 child: InkWell(
                   onTap: () {
-                    if (cleaningTimeController.text != "" &&
-                        cleaningDateController.text != "") {
-                      _req(context, roomID, reservationID);
+                    if (peopleNameController.text != "" &&
+                        peopleIDController.text != "") {
+                      _add(context, reservationID);
                     } else {
-                      log("time or date is empty", name: "REQUEST CLEAN");
+                      log("name or ID is empty", name: "ADD GUEST");
                     }
                   },
                   child: Container(
@@ -80,7 +88,7 @@ class RequestCleaning extends StatelessWidget {
                     width: 80,
                     decoration: MyStyles.roundedBox,
                     child: const Center(
-                      child: Text("Request"),
+                      child: Text("Add"),
                     ),
                   ),
                 ),
@@ -92,19 +100,15 @@ class RequestCleaning extends StatelessWidget {
     );
   }
 
-  void _req(context, int roomid, int reservationID) async {
-    ReservationDetails? rd = await database.reservationDetailDao
-        .getReservationDetailByResAndRoom(reservationID, roomid);
+  void _add(context, int reservationID) async {
+    People p = People(
+        name: peopleNameController.text,
+        nationalId: peopleIDController.text,
+        gender: peopleGenderController.text);
 
-    log("found rd: ${rd!.id!}", name: "REQUEST CLEAN");
+    await database.peopleDao.insertGuest(p);
 
-    CleaningServiceModel cs = CleaningServiceModel(
-        reservationDetail: rd.id!,
-        date: cleaningDateController.text,
-        time: cleaningTimeController.text);
-    await database.cleaningServiceDao.insertCleaningService(cs);
-
-    log("Added cs", name: "REQUEST CLEAN");
+    log("Added Guest", name: "ADD GUEST");
 
     Navigator.pop(context);
   }

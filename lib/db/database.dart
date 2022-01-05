@@ -10,6 +10,7 @@ import 'package:db_hotel/db/general_dao/general_dao.dart';
 import 'package:db_hotel/db/guest/guest_dao.dart';
 import 'package:db_hotel/db/guest/guest_model.dart';
 import 'package:db_hotel/db/order/order_model.dart';
+import 'package:db_hotel/db/people/people_dao.dart';
 import 'package:db_hotel/db/people/people_model.dart';
 import 'package:db_hotel/db/reservation/reservation_dao.dart';
 import 'package:db_hotel/db/reservation/reservation_model.dart';
@@ -58,4 +59,5 @@ abstract class AppDatabase extends FloorDatabase {
   StaffDao get staffDao;
   ReservationDetailDao get reservationDetailDao;
   CleaningServiceDao get cleaningServiceDao;
+  PeopleDao get peopleDao;
 }
