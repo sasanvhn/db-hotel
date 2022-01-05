@@ -810,6 +810,19 @@ class _$ReservationDetailDao extends ReservationDetailDao {
   }
 
   @override
+  Future<List<ReservationDetails>> getRoomsIDsByResID(int res) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM ReservationDetails where reservation = ?1',
+        mapper: (Map<String, Object?> row) => ReservationDetails(
+            id: row['id'] as int?,
+            room: row['room'] as int,
+            reservation: row['reservation'] as int,
+            rate: row['rate'] as int?,
+            extraFacilities: row['extraFacilities'] as String?),
+        arguments: [res]);
+  }
+
+  @override
   Future<void> insertReservationDetail(
       ReservationDetails reservationDetail) async {
     await _reservationDetailsInsertionAdapter.insert(
@@ -1012,8 +1025,7 @@ class _$FoodDao extends FoodDao {
 
 class _$OrderDao extends OrderDao {
   _$OrderDao(this.database, this.changeListener)
-      : _queryAdapter = QueryAdapter(database),
-        _orderInsertionAdapter = InsertionAdapter(
+      : _orderInsertionAdapter = InsertionAdapter(
             database,
             'Order',
             (Order item) => <String, Object?>{
@@ -1026,24 +1038,12 @@ class _$OrderDao extends OrderDao {
 
   final StreamController<String> changeListener;
 
-  final QueryAdapter _queryAdapter;
-
   final InsertionAdapter<Order> _orderInsertionAdapter;
 
   @override
-  Future<List<Order>> getOrdersByReservationDetailID(int rd) async {
-    return _queryAdapter.queryList(
-        'SELECT * FROM Order where reservationDetail = ?1',
-        mapper: (Map<String, Object?> row) => Order(
-            id: row['id'] as int?,
-            place: row['place'] as int,
-            reservationDetail: row['reservationDetail'] as int),
-        arguments: [rd]);
-  }
-
-  @override
-  Future<void> insertOrder(Order r) async {
-    await _orderInsertionAdapter.insert(r, OnConflictStrategy.abort);
+  Future<int> insertOrder(Order r) {
+    return _orderInsertionAdapter.insertAndReturnId(
+        r, OnConflictStrategy.abort);
   }
 }
 

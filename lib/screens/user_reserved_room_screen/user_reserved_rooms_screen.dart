@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:db_hotel/db/database.dart';
 import 'package:db_hotel/db/room/room_model.dart';
 import 'package:db_hotel/screens/request_cleaning_screen/request_cleaning_screen.dart';
+import 'package:db_hotel/screens/restaurants_screen/user_restaurants_screen/user_restaurant_screen.dart';
 import 'package:db_hotel/widgets/custom_appbar/custom_appbar.dart';
 import 'package:db_hotel/widgets/home_floating_button/home_floating_button.dart';
 import 'package:flutter/material.dart';
@@ -90,6 +91,7 @@ class _UserReservedRoomsScreenState extends State<UserReservedRoomsScreen> {
                                 label: Center(child: Text("Max Capacity"))),
                             DataColumn(label: Center(child: Text("Type"))),
                             DataColumn(label: Center(child: Text(" "))),
+                            DataColumn(label: Center(child: Text(" "))),
                             // DataColumn(label: Center(child: Text(" "))),
                           ],
                           rows: List.generate(
@@ -140,29 +142,24 @@ class _UserReservedRoomsScreenState extends State<UserReservedRoomsScreen> {
                                         child: const Text("Request Cleaning"),
                                       ),
                                     )),
-                                    // DataCell(Center(
-                                    //   child: TextButton(
-                                    //     onPressed: () {
-                                    //       showDialog(
-                                    //           context: context,
-                                    //           builder: (context) =>
-                                    //               Container());
-                                    //       // AlertDialog(
-                                    //       //   content: Reserve(
-                                    //       //       database:
-                                    //       //           widget.database,
-                                    //       //       roomID: snapshot
-                                    //       //           .data![index]!.id!,
-                                    //       //       callback: callback),
-                                    //       //   contentPadding:
-                                    //       //       const EdgeInsets.all(0),
-                                    //       //   backgroundColor:
-                                    //       //       Colors.transparent,
-                                    //       // ));
-                                    //     },
-                                    //     child: const Text("Add Guest"),
-                                    //   ),
-                                    // )),
+                                    DataCell(Center(
+                                      child: TextButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      UserRestaurantsScreen(
+                                                          reservationID: widget
+                                                              .reservationID,
+                                                          roomID: snapshot
+                                                              .data![index].id!,
+                                                          database: widget
+                                                              .database)));
+                                        },
+                                        child: const Text("Order Food"),
+                                      ),
+                                    )),
                                   ]))),
                     ),
                   );

@@ -9,10 +9,16 @@ import 'package:db_hotel/widgets/home_floating_button/home_floating_button.dart'
 import 'package:flutter/material.dart';
 
 class UserRestaurantsScreen extends StatefulWidget {
-  const UserRestaurantsScreen({Key? key, required this.database})
+  const UserRestaurantsScreen(
+      {Key? key,
+      required this.database,
+      required this.reservationID,
+      required this.roomID})
       : super(key: key);
 
   final AppDatabase database;
+  final int reservationID;
+  final int roomID;
   @override
   _UserRestaurantsScreenState createState() => _UserRestaurantsScreenState();
 }
@@ -107,6 +113,9 @@ class _UserRestaurantsScreenState extends State<UserRestaurantsScreen> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       RestaurantMenuScreen(
+                                                        reservationID: widget
+                                                            .reservationID,
+                                                        roomID: widget.roomID,
                                                         database:
                                                             widget.database,
                                                         restaurantName: snapshot

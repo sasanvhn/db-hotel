@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:db_hotel/db/database.dart';
 import 'package:db_hotel/db/food/food_model.dart';
 import 'package:db_hotel/db/resturant_coffee_shop/resturant_coffeeshop_model.dart';
+import 'package:db_hotel/screens/food_order_screen/food_order_screen.dart';
 
 import 'package:db_hotel/widgets/custom_appbar/custom_appbar.dart';
 import 'package:db_hotel/widgets/home_floating_button/home_floating_button.dart';
@@ -13,12 +14,16 @@ class RestaurantMenuScreen extends StatefulWidget {
       {Key? key,
       required this.database,
       required this.restaurantID,
-      required this.restaurantName})
+      required this.restaurantName,
+      required this.roomID,
+      required this.reservationID})
       : super(key: key);
 
   final AppDatabase database;
   final int restaurantID;
   final String restaurantName;
+  final int reservationID;
+  final int roomID;
   @override
   _RestaurantMenuScreenState createState() => _RestaurantMenuScreenState();
 }
@@ -122,18 +127,21 @@ class _RestaurantMenuScreenState extends State<RestaurantMenuScreen> {
                                           showDialog(
                                               context: context,
                                               builder: (context) =>
-                                                  Container());
-                                          // AlertDialog(
-                                          //   content: AddPeople(
-                                          //       database:
-                                          //           widget.database,
-                                          //       reservationID: snapshot
-                                          //           .data![index].id!),
-                                          //   contentPadding:
-                                          //       const EdgeInsets.all(0),
-                                          //   backgroundColor:
-                                          //       Colors.transparent,
-                                          // ));
+                                                  // Container());
+                                                  AlertDialog(
+                                                    content: FoodOrder(
+                                                      reservationID:
+                                                          widget.reservationID,
+                                                      roomID: widget.roomID,
+                                                      database: widget.database,
+                                                      foodID: snapshot
+                                                          .data![index].id!,
+                                                    ),
+                                                    contentPadding:
+                                                        const EdgeInsets.all(0),
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                  ));
                                         },
                                         child: const Text("Order"),
                                       ),

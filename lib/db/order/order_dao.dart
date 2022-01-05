@@ -4,8 +4,8 @@ import 'package:floor/floor.dart';
 @dao
 abstract class OrderDao {
   @insert
-  Future<void> insertOrder(Order r);
+  Future<int> insertOrder(Order r);
 
-  @Query('SELECT * FROM Order where reservationDetail = :rd')
-  Future<List<Order>> getOrdersByReservationDetailID(int rd);
+  // @Query('SELECT * FROM Order')
+  // Future<List<Order>> getAll();
 }

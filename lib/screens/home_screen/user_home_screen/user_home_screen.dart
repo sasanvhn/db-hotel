@@ -99,24 +99,24 @@ class UserHomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              InkWell(
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            UserRestaurantsScreen(database: database))),
-                child: Container(
-                  width: 300,
-                  height: 100,
-                  decoration: MyStyles.roundedBox,
-                  child: Center(
-                    child: Text(
-                      "Restaurants | CoffeeShops",
-                      style: MyStyles.normalText20,
-                    ),
-                  ),
-                ),
-              ),
+              // InkWell(
+              //   onTap: () => Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //           builder: (context) =>
+              //               UserRestaurantsScreen(database: database))),
+              //   child: Container(
+              //     width: 300,
+              //     height: 100,
+              //     decoration: MyStyles.roundedBox,
+              //     child: Center(
+              //       child: Text(
+              //         "Restaurants | CoffeeShops",
+              //         style: MyStyles.normalText20,
+              //       ),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
