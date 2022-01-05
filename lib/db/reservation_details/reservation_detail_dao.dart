@@ -15,4 +15,9 @@ abstract class ReservationDetailDao {
   @delete
   Future<int> deleteReservationDetails(
       List<ReservationDetails> reservationDetails);
+
+  @Query(
+      'SELECT * FROM ReservationDetails where reservation = :res AND room = :room')
+  Future<ReservationDetails?> getReservationDetailByResAndRoom(
+      int res, int room);
 }

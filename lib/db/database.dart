@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:db_hotel/db/bill/bill_model.dart';
 import 'package:db_hotel/db/booking_status/booking_status_dao.dart';
 import 'package:db_hotel/db/booking_status/booking_status_model.dart';
+import 'package:db_hotel/db/cleaning_service/cleaning_service_dao.dart';
 import 'package:db_hotel/db/cleaning_service/cleaning_service_model.dart';
 import 'package:db_hotel/db/food/food_model.dart';
 import 'package:db_hotel/db/food_order_relation/food_order_relation_model.dart';
@@ -56,4 +57,5 @@ abstract class AppDatabase extends FloorDatabase {
   ReservationDao get reservationDao;
   StaffDao get staffDao;
   ReservationDetailDao get reservationDetailDao;
+  CleaningServiceDao get cleaningServiceDao;
 }

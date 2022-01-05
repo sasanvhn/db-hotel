@@ -79,6 +79,8 @@ class _$AppDatabase extends AppDatabase {
 
   ReservationDetailDao? _reservationDetailDaoInstance;
 
+  CleaningServiceDao? _cleaningServiceDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -180,6 +182,12 @@ class _$AppDatabase extends AppDatabase {
   ReservationDetailDao get reservationDetailDao {
     return _reservationDetailDaoInstance ??=
         _$ReservationDetailDao(database, changeListener);
+  }
+
+  @override
+  CleaningServiceDao get cleaningServiceDao {
+    return _cleaningServiceDaoInstance ??=
+        _$CleaningServiceDao(database, changeListener);
   }
 }
 
@@ -752,6 +760,20 @@ class _$ReservationDetailDao extends ReservationDetailDao {
   }
 
   @override
+  Future<ReservationDetails?> getReservationDetailByResAndRoom(
+      int res, int room) async {
+    return _queryAdapter.query(
+        'SELECT * FROM ReservationDetails where reservation = ?1 AND room = ?2',
+        mapper: (Map<String, Object?> row) => ReservationDetails(
+            id: row['id'] as int?,
+            room: row['room'] as int,
+            reservation: row['reservation'] as int,
+            rate: row['rate'] as int?,
+            extraFacilities: row['extraFacilities'] as String?),
+        arguments: [res, room]);
+  }
+
+  @override
   Future<void> insertReservationDetail(
       ReservationDetails reservationDetail) async {
     await _reservationDetailsInsertionAdapter.insert(
@@ -769,5 +791,34 @@ class _$ReservationDetailDao extends ReservationDetailDao {
       List<ReservationDetails> reservationDetails) {
     return _reservationDetailsDeletionAdapter
         .deleteListAndReturnChangedRows(reservationDetails);
+  }
+}
+
+class _$CleaningServiceDao extends CleaningServiceDao {
+  _$CleaningServiceDao(this.database, this.changeListener)
+      : _cleaningServiceModelInsertionAdapter = InsertionAdapter(
+            database,
+            'CleaningServiceModel',
+            (CleaningServiceModel item) => <String, Object?>{
+                  'id': item.id,
+                  'date': item.date,
+                  'time': item.time,
+                  'description': item.description,
+                  'staff': item.staff,
+                  'reservationDetail': item.reservationDetail
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final InsertionAdapter<CleaningServiceModel>
+      _cleaningServiceModelInsertionAdapter;
+
+  @override
+  Future<void> insertCleaningService(
+      CleaningServiceModel cleaningService) async {
+    await _cleaningServiceModelInsertionAdapter.insert(
+        cleaningService, OnConflictStrategy.abort);
   }
 }

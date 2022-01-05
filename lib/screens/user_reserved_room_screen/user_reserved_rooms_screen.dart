@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:db_hotel/db/database.dart';
 import 'package:db_hotel/db/room/room_model.dart';
+import 'package:db_hotel/screens/request_cleaning_screen/request_cleaning_screen.dart';
 import 'package:db_hotel/widgets/custom_appbar/custom_appbar.dart';
 import 'package:db_hotel/widgets/home_floating_button/home_floating_button.dart';
 import 'package:flutter/material.dart';
@@ -121,19 +122,20 @@ class _UserReservedRoomsScreenState extends State<UserReservedRoomsScreen> {
                                           showDialog(
                                               context: context,
                                               builder: (context) =>
-                                                  Container());
-                                          // AlertDialog(
-                                          //   content: Reserve(
-                                          //       database:
-                                          //           widget.database,
-                                          //       roomID: snapshot
-                                          //           .data![index]!.id!,
-                                          //       callback: callback),
-                                          //   contentPadding:
-                                          //       const EdgeInsets.all(0),
-                                          //   backgroundColor:
-                                          //       Colors.transparent,
-                                          // ));
+                                                  // Container());
+                                                  AlertDialog(
+                                                    content: RequestCleaning(
+                                                      database: widget.database,
+                                                      roomID: snapshot
+                                                          .data![index].id!,
+                                                      reservationID:
+                                                          widget.reservationID,
+                                                    ),
+                                                    contentPadding:
+                                                        const EdgeInsets.all(0),
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                  ));
                                         },
                                         child: const Text("Request Cleaning"),
                                       ),
