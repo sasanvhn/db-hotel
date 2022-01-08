@@ -14,7 +14,9 @@ class CustomAppBar extends AppBar {
             Row(
               children: [
                 Text(
-                  Configs.guest!.name,
+                  Configs.guest != null
+                      ? Configs.guest!.name
+                      : Configs.staff!.name,
                   style: MyStyles.normalText20,
                 ),
                 const SizedBox(

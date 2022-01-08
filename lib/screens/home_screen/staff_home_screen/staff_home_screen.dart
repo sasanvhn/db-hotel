@@ -1,6 +1,7 @@
 import 'package:db_hotel/db/database.dart';
 import 'package:db_hotel/screens/first_screen/first_screen.dart';
 import 'package:db_hotel/screens/reservations_screen/user_reservations_screen.dart';
+import 'package:db_hotel/screens/reservations_screen/waiting_reservations_screen/waiting_reservations_screen.dart';
 import 'package:db_hotel/screens/restaurants_screen/user_restaurants_screen/user_restaurant_screen.dart';
 import 'package:db_hotel/screens/rooms_screen/user_rooms_screen.dart';
 import 'package:db_hotel/widgets/styles/my_styles.dart';
@@ -64,11 +65,11 @@ class StaffHomeScreen extends StatelessWidget {
             runSpacing: 30,
             children: [
               InkWell(
-                // onTap: () => Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) =>
-                //             UserRoomsScreen(database: database))),
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            WaitingReservationsScreen(database: database))),
                 child: Container(
                   width: 300,
                   height: 100,

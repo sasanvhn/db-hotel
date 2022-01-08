@@ -12,4 +12,7 @@ abstract class GuestDao {
 
   @Query('SELECT * FROM Guest where nationalID = :nationalID')
   Future<Guest?> getGuestByNationalID(String nationalID);
+
+  @Query('SELECT * FROM Guest where id = :id')
+  Future<Guest?> getGuestByID(int id);
 }

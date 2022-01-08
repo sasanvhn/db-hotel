@@ -33,4 +33,7 @@ abstract class ReservationDao {
       'SELECT * FROM Reservation where guest = :id and bookingStatus = :status')
   Future<List<Reservation>> getReservationByGuestIDAndStatus(
       int id, int status);
+
+  @Query('SELECT * FROM Reservation where bookingStatus = :status')
+  Future<List<Reservation>> getReservationByStatus(int status);
 }
