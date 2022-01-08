@@ -299,6 +299,20 @@ class _$GuestDao extends GuestDao {
   }
 
   @override
+  Future<List<Guest>> getAll() async {
+    return _queryAdapter.queryList('SELECT * FROM Guest',
+        mapper: (Map<String, Object?> row) => Guest(
+            id: row['id'] as int?,
+            name: row['name'] as String,
+            nationalId: row['nationalId'] as String,
+            gender: row['gender'] as String?,
+            address: row['address'] as String?,
+            birthDate: row['birthDate'] as String?,
+            password: row['password'] as String,
+            phoneNumber: row['phoneNumber'] as String));
+  }
+
+  @override
   Future<void> insertGuest(Guest guest) async {
     await _guestInsertionAdapter.insert(guest, OnConflictStrategy.abort);
   }

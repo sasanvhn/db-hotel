@@ -15,4 +15,7 @@ abstract class GuestDao {
 
   @Query('SELECT * FROM Guest where id = :id')
   Future<Guest?> getGuestByID(int id);
+
+  @Query('SELECT * FROM Guest')
+  Future<List<Guest>> getAll();
 }

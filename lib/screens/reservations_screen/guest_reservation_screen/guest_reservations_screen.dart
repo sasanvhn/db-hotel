@@ -6,21 +6,24 @@ import 'package:db_hotel/db/database.dart';
 import 'package:db_hotel/db/reservation/reservation_model.dart';
 import 'package:db_hotel/screens/add_people_screen/add_people_screen.dart';
 import 'package:db_hotel/screens/bill_screen/bill_screen.dart';
-import 'package:db_hotel/screens/reserved_room_screen/user_reserved_rooms_screen.dart';
+import 'package:db_hotel/screens/reserved_room_screen/guest_reserved_rooms_screen/guest_reserved_rooms_screen.dart';
 import 'package:db_hotel/widgets/custom_appbar/custom_appbar.dart';
 import 'package:db_hotel/widgets/home_floating_button/home_floating_button.dart';
 import 'package:flutter/material.dart';
 
-class UserReservationsScreen extends StatefulWidget {
-  const UserReservationsScreen({Key? key, required this.database})
+class GuestReservationsScreen extends StatefulWidget {
+  const GuestReservationsScreen(
+      {Key? key, required this.database, required this.guest})
       : super(key: key);
 
   final AppDatabase database;
+  final int guest;
   @override
-  _UserReservationsScreenState createState() => _UserReservationsScreenState();
+  _GuestReservationsScreenState createState() =>
+      _GuestReservationsScreenState();
 }
 
-class _UserReservationsScreenState extends State<UserReservationsScreen> {
+class _GuestReservationsScreenState extends State<GuestReservationsScreen> {
   String dropDownVal = "All";
 
   @override
@@ -91,8 +94,8 @@ class _UserReservationsScreenState extends State<UserReservationsScreen> {
                             DataColumn(label: Center(child: Text("Nights"))),
                             DataColumn(label: Center(child: Text("Status"))),
                             DataColumn(label: Center(child: Text(" "))),
-                            DataColumn(label: Center(child: Text(" "))),
-                            DataColumn(label: Center(child: Text(" "))),
+                            // DataColumn(label: Center(child: Text(" "))),
+                            // DataColumn(label: Center(child: Text(" "))),
                           ],
                           rows: List.generate(
                               snapshot.data!.length,
@@ -142,7 +145,7 @@ class _UserReservationsScreenState extends State<UserReservationsScreen> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      UserReservedRoomsScreen(
+                                                      GuestReservedRoomsScreen(
                                                         database:
                                                             widget.database,
                                                         reservationID: snapshot
@@ -152,50 +155,50 @@ class _UserReservationsScreenState extends State<UserReservationsScreen> {
                                         child: const Text("Rooms"),
                                       ),
                                     )),
-                                    DataCell(Center(
-                                      child: TextButton(
-                                        onPressed: () {
-                                          showDialog(
-                                              context: context,
-                                              builder: (context) =>
-                                                  // Container());
-                                                  AlertDialog(
-                                                    content: BillScreen(
-                                                      database: widget.database,
-                                                      reservationID: snapshot
-                                                          .data![index].id!,
-                                                    ),
-                                                    contentPadding:
-                                                        const EdgeInsets.all(0),
-                                                    backgroundColor:
-                                                        Colors.transparent,
-                                                  ));
-                                        },
-                                        child: const Text("Bill"),
-                                      ),
-                                    )),
-                                    DataCell(Center(
-                                      child: TextButton(
-                                        onPressed: () {
-                                          showDialog(
-                                              context: context,
-                                              builder: (context) =>
-                                                  // Container());
-                                                  AlertDialog(
-                                                    content: AddPeople(
-                                                        database:
-                                                            widget.database,
-                                                        reservationID: snapshot
-                                                            .data![index].id!),
-                                                    contentPadding:
-                                                        const EdgeInsets.all(0),
-                                                    backgroundColor:
-                                                        Colors.transparent,
-                                                  ));
-                                        },
-                                        child: const Text("Add Guest"),
-                                      ),
-                                    )),
+                                    // DataCell(Center(
+                                    //   child: TextButton(
+                                    //     onPressed: () {
+                                    //       showDialog(
+                                    //           context: context,
+                                    //           builder: (context) =>
+                                    //               // Container());
+                                    //               AlertDialog(
+                                    //                 content: BillScreen(
+                                    //                   database: widget.database,
+                                    //                   reservationID: snapshot
+                                    //                       .data![index].id!,
+                                    //                 ),
+                                    //                 contentPadding:
+                                    //                     const EdgeInsets.all(0),
+                                    //                 backgroundColor:
+                                    //                     Colors.transparent,
+                                    //               ));
+                                    //     },
+                                    //     child: const Text("Bill"),
+                                    //   ),
+                                    // )),
+                                    // DataCell(Center(
+                                    //   child: TextButton(
+                                    //     onPressed: () {
+                                    //       showDialog(
+                                    //           context: context,
+                                    //           builder: (context) =>
+                                    //               // Container());
+                                    //               AlertDialog(
+                                    //                 content: AddPeople(
+                                    //                     database:
+                                    //                         widget.database,
+                                    //                     reservationID: snapshot
+                                    //                         .data![index].id!),
+                                    //                 contentPadding:
+                                    //                     const EdgeInsets.all(0),
+                                    //                 backgroundColor:
+                                    //                     Colors.transparent,
+                                    //               ));
+                                    //     },
+                                    //     child: const Text("Add Guest"),
+                                    //   ),
+                                    // )),
                                   ]))),
                     ),
                   );
@@ -224,7 +227,7 @@ class _UserReservationsScreenState extends State<UserReservationsScreen> {
     if (dropDownVal == "All") {
       final List<Reservation> reservations = await widget
           .database.reservationDao
-          .getReservationByGuestID(Configs.guest!.id!);
+          .getReservationByGuestID(widget.guest);
 
       return reservations;
     } else {
@@ -233,7 +236,7 @@ class _UserReservationsScreenState extends State<UserReservationsScreen> {
 
       final List<Reservation> reservations = await widget
           .database.reservationDao
-          .getReservationByGuestIDAndStatus(Configs.guest!.id!, bs!.id!);
+          .getReservationByGuestIDAndStatus(widget.guest, bs!.id!);
       return reservations;
     }
   }
