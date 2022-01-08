@@ -28,6 +28,12 @@ class CleaningRequestsScreen extends StatefulWidget {
 class _CleaningRequestsScreenState extends State<CleaningRequestsScreen> {
   String dropDownVal = "New";
 
+  void callback() {
+    setState(() {
+      log("Screen Refreshed", name: "CLEANING_SERVICE_SCREEN");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,11 +56,11 @@ class _CleaningRequestsScreenState extends State<CleaningRequestsScreen> {
                   ],
                 ),
               ),
-              TextButton(
-                  onPressed: () {
-                    setState(() {});
-                  },
-                  child: const Icon(Icons.refresh_sharp)),
+              // TextButton(
+              //     onPressed: () {
+              //       setState(() {});
+              //     },
+              //     child: const Icon(Icons.refresh_sharp)),
               Padding(
                 padding: const EdgeInsets.all(28.0),
                 child: Row(
@@ -163,6 +169,7 @@ class _CleaningRequestsScreenState extends State<CleaningRequestsScreen> {
                                                                 AssignStaffToCleaningService(
                                                               database: widget
                                                                   .database,
+                                                              callback: callback,
                                                               cleaningServiceID:
                                                                   snapshot
                                                                       .data![

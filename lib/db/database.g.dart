@@ -783,6 +783,20 @@ class _$StaffDao extends StaffDao {
                   'name': item.name,
                   'email': item.email,
                   'role': item.role
+                }),
+        _staffDeletionAdapter = DeletionAdapter(
+            database,
+            'Staff',
+            ['id'],
+            (Staff item) => <String, Object?>{
+                  'id': item.id,
+                  'startDate': item.startDate,
+                  'salary': item.salary,
+                  'password': item.password,
+                  'nationalId': item.nationalId,
+                  'name': item.name,
+                  'email': item.email,
+                  'role': item.role
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -793,9 +807,26 @@ class _$StaffDao extends StaffDao {
 
   final InsertionAdapter<Staff> _staffInsertionAdapter;
 
+  final DeletionAdapter<Staff> _staffDeletionAdapter;
+
   @override
   Future<Staff?> getStaffByID(int id) async {
     return _queryAdapter.query('SELECT * FROM Staff where id = ?1',
+        mapper: (Map<String, Object?> row) => Staff(
+            id: row['id'] as int?,
+            startDate: row['startDate'] as String,
+            salary: row['salary'] as String,
+            password: row['password'] as String,
+            name: row['name'] as String,
+            nationalId: row['nationalId'] as String,
+            email: row['email'] as String,
+            role: row['role'] as int),
+        arguments: [id]);
+  }
+
+  @override
+  Future<Staff?> getStaffByNationalID(String id) async {
+    return _queryAdapter.query('SELECT * FROM Staff where nationalId = ?1',
         mapper: (Map<String, Object?> row) => Staff(
             id: row['id'] as int?,
             startDate: row['startDate'] as String,
@@ -839,8 +870,41 @@ class _$StaffDao extends StaffDao {
   }
 
   @override
+  Future<List<Staff>> getAll() async {
+    return _queryAdapter.queryList('SELECT * FROM Staff',
+        mapper: (Map<String, Object?> row) => Staff(
+            id: row['id'] as int?,
+            startDate: row['startDate'] as String,
+            salary: row['salary'] as String,
+            password: row['password'] as String,
+            name: row['name'] as String,
+            nationalId: row['nationalId'] as String,
+            email: row['email'] as String,
+            role: row['role'] as int));
+  }
+
+  @override
+  Future<List<Staff>> getReceptions() async {
+    return _queryAdapter.queryList('SELECT * FROM Staff where role = 0',
+        mapper: (Map<String, Object?> row) => Staff(
+            id: row['id'] as int?,
+            startDate: row['startDate'] as String,
+            salary: row['salary'] as String,
+            password: row['password'] as String,
+            name: row['name'] as String,
+            nationalId: row['nationalId'] as String,
+            email: row['email'] as String,
+            role: row['role'] as int));
+  }
+
+  @override
   Future<void> insertStaff(Staff staff) async {
     await _staffInsertionAdapter.insert(staff, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<int> deleteStaff(List<Staff> sd) {
+    return _staffDeletionAdapter.deleteListAndReturnChangedRows(sd);
   }
 }
 

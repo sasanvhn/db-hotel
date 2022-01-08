@@ -11,11 +11,15 @@ import 'package:flutter/material.dart';
 
 class AssignStaffToCleaningService extends StatelessWidget {
   const AssignStaffToCleaningService(
-      {Key? key, required this.database, required this.cleaningServiceID})
+      {Key? key,
+      required this.database,
+      required this.cleaningServiceID,
+      required this.callback})
       : super(key: key);
 
   final AppDatabase database;
   final int cleaningServiceID;
+  final Function callback;
 
   // final TextEditingController placeController = TextEditingController();
 
@@ -59,8 +63,8 @@ class AssignStaffToCleaningService extends StatelessWidget {
                                       .toString()),
                                   TextButton(
                                       onPressed: () async {
-                                        await _assign(context,
-                                            snapshot.data![index].id!);
+                                        await _assign(
+                                            context, snapshot.data![index].id!);
                                         log("Assigned ${snapshot.data![index].name} to $cleaningServiceID",
                                             name: "CLEANING ASSIGN");
                                       },
@@ -87,6 +91,7 @@ class AssignStaffToCleaningService extends StatelessWidget {
     await database.cleaningServiceDao.updateCleaningService(cs);
 
     Navigator.pop(context);
+    callback();
   }
 
   Future<List<Staff>> _getStaff() async {

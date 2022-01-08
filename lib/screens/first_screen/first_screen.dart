@@ -1,4 +1,5 @@
 import 'package:db_hotel/db/database.dart';
+import 'package:db_hotel/screens/auth_screens/admin_auth_screen/admin_auth_screen.dart';
 import 'package:db_hotel/screens/auth_screens/staff_auth_screen/staff_auth_screen.dart';
 import 'package:db_hotel/screens/auth_screens/user_auth_screen/user_auth_screen.dart';
 import 'package:db_hotel/widgets/styles/my_styles.dart';
@@ -72,14 +73,22 @@ class _FirstScreenState extends State<FirstScreen> {
                     ),
                   ),
                 ),
-                Container(
-                  width: 300,
-                  height: 100,
-                  decoration: MyStyles.roundedBox,
-                  child: Center(
-                    child: Text(
-                      "Admin",
-                      style: MyStyles.normalText20,
+                InkWell(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AdminAuthScreen(
+                                database: widget.database,
+                              ))),
+                  child: Container(
+                    width: 300,
+                    height: 100,
+                    decoration: MyStyles.roundedBox,
+                    child: Center(
+                      child: Text(
+                        "Admin",
+                        style: MyStyles.normalText20,
+                      ),
                     ),
                   ),
                 ),
