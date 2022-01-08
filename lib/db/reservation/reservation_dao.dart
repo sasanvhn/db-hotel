@@ -18,7 +18,7 @@ abstract class ReservationDao {
   Future<Reservation?> getReservationByID(int id);
 
   @Query('SELECT * FROM Reservation')
-  Future<List<Reservation>?> getAll();
+  Future<List<Reservation>> getAll();
 
   @delete
   Future<void> deleteReservation(Reservation reservation);

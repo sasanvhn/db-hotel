@@ -645,7 +645,7 @@ class _$ReservationDao extends ReservationDao {
   }
 
   @override
-  Future<List<Reservation>?> getAll() async {
+  Future<List<Reservation>> getAll() async {
     return _queryAdapter.queryList('SELECT * FROM Reservation',
         mapper: (Map<String, Object?> row) => Reservation(
             id: row['id'] as int?,

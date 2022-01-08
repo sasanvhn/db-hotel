@@ -22,7 +22,7 @@ class AllReservationsScreen extends StatefulWidget {
 }
 
 class AllReservationsScreenState extends State<AllReservationsScreen> {
-  // String dropDownVal = "All";
+  String dropDownVal = "All";
 
   @override
   Widget build(BuildContext context) {
@@ -49,27 +49,27 @@ class AllReservationsScreenState extends State<AllReservationsScreen> {
               Padding(
                 padding: const EdgeInsets.all(28.0),
                 child: Row(
-                  children: const [
-                    Text(" "),
-                    // const SizedBox(
-                    //   width: 10,
-                    // ),
-                    // DropdownButton<String>(
-                    //   value: dropDownVal,
-                    //   items: <String>["All", "Approved", "Declined", "Waiting"]
-                    //       .map((String value) {
-                    //     return DropdownMenuItem<String>(
-                    //       value: value,
-                    //       child: Text(value),
-                    //     );
-                    //   }).toList(),
-                    //   onChanged: (val) {
-                    //     log("val is $val", name: "DROPDOWN");
-                    //     setState(() {
-                    //       val == null ? dropDownVal = "" : dropDownVal = val;
-                    //     });
-                    //   },
-                    // )
+                  children: [
+                    const Text(" "),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    DropdownButton<String>(
+                      value: dropDownVal,
+                      items: <String>["All", "Approved", "Declined", "Waiting"]
+                          .map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (val) {
+                        log("val is $val", name: "DROPDOWN");
+                        setState(() {
+                          val == null ? dropDownVal = "" : dropDownVal = val;
+                        });
+                      },
+                    )
                   ],
                 ),
               ),
@@ -85,7 +85,7 @@ class AllReservationsScreenState extends State<AllReservationsScreen> {
                   return Expanded(
                     child: SingleChildScrollView(
                       child: DataTable(
-                        dataRowHeight: 120,
+                          dataRowHeight: 120,
                           columns: const [
                             DataColumn(label: Center(child: Text("Reserve"))),
                             DataColumn(label: Center(child: Text("Check In"))),
@@ -229,11 +229,20 @@ class AllReservationsScreenState extends State<AllReservationsScreen> {
   }
 
   Future<List<Reservation>> _getReservations() async {
-    final BookingStatus? bs = await widget.database.bookingStatusDao
-        .getBookingStatusByName("Approved");
+    if (dropDownVal == "All") {
+      final BookingStatus? bs = await widget.database.bookingStatusDao
+          .getBookingStatusByName("Approved");
 
-    final List<Reservation> reservations =
-        await widget.database.reservationDao.getReservationByStatus(bs!.id!);
-    return reservations;
+      final List<Reservation> reservations =
+          await widget.database.reservationDao.getAll();
+      return reservations;
+    } else {
+      final BookingStatus? bs = await widget.database.bookingStatusDao
+          .getBookingStatusByName(dropDownVal);
+
+      final List<Reservation> reservations =
+          await widget.database.reservationDao.getReservationByStatus(bs!.id!);
+      return reservations;
+    }
   }
 }
