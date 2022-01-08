@@ -743,6 +743,22 @@ class _$StaffDao extends StaffDao {
   }
 
   @override
+  Future<Staff?> getStaff(String nationalID, String password) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Staff where password = ?2 and nationalID = ?1',
+        mapper: (Map<String, Object?> row) => Staff(
+            id: row['id'] as int?,
+            startDate: row['startDate'] as String,
+            salary: row['salary'] as String,
+            password: row['password'] as String,
+            name: row['name'] as String,
+            nationalId: row['nationalId'] as String,
+            email: row['email'] as String,
+            role: row['role'] as int),
+        arguments: [nationalID, password]);
+  }
+
+  @override
   Future<void> insertStaff(Staff staff) async {
     await _staffInsertionAdapter.insert(staff, OnConflictStrategy.abort);
   }

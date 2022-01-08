@@ -220,6 +220,12 @@ void dbUtil(AppDatabase db) async {
     await db.staffDao.insertStaff(s1);
   }
 
+  Staff? s2 = await db.staffDao.getStaffByID(2);
+  if (s2 == null){
+    Staff s1 = Staff(password: "1", name: "staff1", nationalId: "11", email: "aa");
+    await db.staffDao.insertStaff(s1);
+  }
+
   List<RestaurantCoffeeShop> rc1 = await db.restaurantDao.getAll();
   if (rc1.isEmpty) {
     RestaurantCoffeeShop rc = RestaurantCoffeeShop(name: "Lavia", type: 0);

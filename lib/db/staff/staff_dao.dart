@@ -8,4 +8,8 @@ abstract class StaffDao {
 
   @Query('SELECT * FROM Staff where id = :id')
   Future<Staff?> getStaffByID(int id);
+
+  @Query(
+      'SELECT * FROM Staff where password = :password and nationalID = :nationalID')
+  Future<Staff?> getStaff(String nationalID, String password);
 }
