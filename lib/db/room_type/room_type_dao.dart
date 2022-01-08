@@ -8,4 +8,7 @@ abstract class RoomTypeDao {
 
   @Query('SELECT * FROM RoomType where name = :name')
   Future<RoomType?> getRoomTypeByName(String name);
+
+  @Query('SELECT * FROM RoomType where id = :id')
+  Future<RoomType?> getRoomTypeByID(int id);
 }

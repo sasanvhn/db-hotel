@@ -13,7 +13,7 @@ abstract class RoomDao {
   Future<Room?> getRoomByID(int id);
 
   @Query('SELECT * FROM Room where status = :statusID')
-  Future<List<Room?>?> getRoomsByStatusID(int statusID);
+  Future<List<Room>> getRoomsByStatusID(int statusID);
 
   @Query('SELECT * FROM Room where type = :typeID')
   Future<List<Room?>?> getRoomsByTypeID(int typeID);

@@ -339,6 +339,18 @@ class _$RoomTypeDao extends RoomTypeDao {
   }
 
   @override
+  Future<RoomType?> getRoomTypeByID(int id) async {
+    return _queryAdapter.query('SELECT * FROM RoomType where id = ?1',
+        mapper: (Map<String, Object?> row) => RoomType(
+            id: row['id'] as int?,
+            name: row['name'] as String,
+            numberOfBeds: row['numberOfBeds'] as int,
+            image: row['image'] as String,
+            description: row['description'] as String),
+        arguments: [id]);
+  }
+
+  @override
   Future<void> insertRoomType(RoomType roomType) async {
     await _roomTypeInsertionAdapter.insert(roomType, OnConflictStrategy.abort);
   }
@@ -367,6 +379,14 @@ class _$RoomStatusDao extends RoomStatusDao {
         mapper: (Map<String, Object?> row) =>
             RoomStatus(id: row['id'] as int?, name: row['name'] as String),
         arguments: [name]);
+  }
+
+  @override
+  Future<RoomStatus?> getRoomStatusByID(int id) async {
+    return _queryAdapter.query('SELECT * FROM RoomStatus where id = ?1',
+        mapper: (Map<String, Object?> row) =>
+            RoomStatus(id: row['id'] as int?, name: row['name'] as String),
+        arguments: [id]);
   }
 
   @override
@@ -443,7 +463,7 @@ class _$RoomDao extends RoomDao {
   }
 
   @override
-  Future<List<Room?>?> getRoomsByStatusID(int statusID) async {
+  Future<List<Room>> getRoomsByStatusID(int statusID) async {
     return _queryAdapter.queryList('SELECT * FROM Room where status = ?1',
         mapper: (Map<String, Object?> row) => Room(
             id: row['id'] as int?,
