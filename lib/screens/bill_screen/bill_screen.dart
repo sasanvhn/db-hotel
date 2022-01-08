@@ -36,7 +36,7 @@ class BillScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               FutureBuilder(
-                future: _getRooms(),
+                future: _getReservationDetails(),
                 builder: (context,
                     AsyncSnapshot<List<ReservationDetails>> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -99,7 +99,7 @@ class BillScreen extends StatelessWidget {
     );
   }
 
-  Future<List<ReservationDetails>> _getRooms() async {
+  Future<List<ReservationDetails>> _getReservationDetails() async {
     final List<ReservationDetails> rds =
         await database.reservationDetailDao.getRoomsIDsByResID(reservationID);
 
