@@ -17,4 +17,7 @@ abstract class FoodDao {
 
   @Query('SELECT * FROM Food where id = :id')
   Future<Food?> getFoodByID(int id);
+
+  @delete
+  Future<int> deleteFoods(List<Food> f);
 }

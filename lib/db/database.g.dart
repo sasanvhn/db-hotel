@@ -1215,6 +1215,18 @@ class _$FoodDao extends FoodDao {
                   'shopId': item.shopId,
                   'type': item.type,
                   'ingredients': item.ingredients
+                }),
+        _foodDeletionAdapter = DeletionAdapter(
+            database,
+            'Food',
+            ['id'],
+            (Food item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'price': item.price,
+                  'shopId': item.shopId,
+                  'type': item.type,
+                  'ingredients': item.ingredients
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -1224,6 +1236,8 @@ class _$FoodDao extends FoodDao {
   final QueryAdapter _queryAdapter;
 
   final InsertionAdapter<Food> _foodInsertionAdapter;
+
+  final DeletionAdapter<Food> _foodDeletionAdapter;
 
   @override
   Future<List<Food>> getFoodByShopID(int shopID) async {
@@ -1280,6 +1294,11 @@ class _$FoodDao extends FoodDao {
   @override
   Future<void> insertFood(Food f) async {
     await _foodInsertionAdapter.insert(f, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<int> deleteFoods(List<Food> f) {
+    return _foodDeletionAdapter.deleteListAndReturnChangedRows(f);
   }
 }
 

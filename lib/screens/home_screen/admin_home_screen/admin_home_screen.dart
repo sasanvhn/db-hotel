@@ -1,4 +1,5 @@
 import 'package:db_hotel/db/database.dart';
+import 'package:db_hotel/screens/change_restaurant_menu/change_restaurant_menu1.dart';
 import 'package:db_hotel/screens/cleaning_requests_screen/cleaning_requests_screen.dart';
 import 'package:db_hotel/screens/first_screen/first_screen.dart';
 import 'package:db_hotel/screens/guests_screen/guests_screen.dart';
@@ -88,24 +89,24 @@ class AdminHomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              // InkWell(
-              //   onTap: () => Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //           builder: (context) =>
-              //               AllReservationsScreen(database: database))),
-              //   child: Container(
-              //     width: 300,
-              //     height: 100,
-              //     decoration: MyStyles.roundedBox,
-              //     child: Center(
-              //       child: Text(
-              //         "All Reservations",
-              //         style: MyStyles.normalText20,
-              //       ),
-              //     ),
-              //   ),
-              // ),
+              InkWell(
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            AdminRestaurantsScreen(database: database))),
+                child: Container(
+                  width: 300,
+                  height: 100,
+                  decoration: MyStyles.roundedBox,
+                  child: Center(
+                    child: Text(
+                      "Change Restaurant Menu",
+                      style: MyStyles.normalText20,
+                    ),
+                  ),
+                ),
+              ),
               // InkWell(
               //   onTap: () => Navigator.push(
               //       context,
