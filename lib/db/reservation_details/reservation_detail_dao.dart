@@ -23,4 +23,7 @@ abstract class ReservationDetailDao {
 
   @Query('SELECT * FROM ReservationDetails where reservation = :res')
   Future<List<ReservationDetails>> getRoomsIDsByResID(int res);
+
+  @Query('SELECT * FROM ReservationDetails where id = :id')
+  Future<ReservationDetails?> getRoomsIDByID(int id);
 }

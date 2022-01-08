@@ -825,6 +825,20 @@ class _$StaffDao extends StaffDao {
   }
 
   @override
+  Future<List<Staff>> getCleaningStaff() async {
+    return _queryAdapter.queryList('SELECT * FROM Staff where role = 1',
+        mapper: (Map<String, Object?> row) => Staff(
+            id: row['id'] as int?,
+            startDate: row['startDate'] as String,
+            salary: row['salary'] as String,
+            password: row['password'] as String,
+            name: row['name'] as String,
+            nationalId: row['nationalId'] as String,
+            email: row['email'] as String,
+            role: row['role'] as int));
+  }
+
+  @override
   Future<void> insertStaff(Staff staff) async {
     await _staffInsertionAdapter.insert(staff, OnConflictStrategy.abort);
   }
@@ -905,6 +919,18 @@ class _$ReservationDetailDao extends ReservationDetailDao {
   }
 
   @override
+  Future<ReservationDetails?> getRoomsIDByID(int id) async {
+    return _queryAdapter.query('SELECT * FROM ReservationDetails where id = ?1',
+        mapper: (Map<String, Object?> row) => ReservationDetails(
+            id: row['id'] as int?,
+            room: row['room'] as int,
+            reservation: row['reservation'] as int,
+            rate: row['rate'] as int?,
+            extraFacilities: row['extraFacilities'] as String?),
+        arguments: [id]);
+  }
+
+  @override
   Future<void> insertReservationDetail(
       ReservationDetails reservationDetail) async {
     await _reservationDetailsInsertionAdapter.insert(
@@ -927,9 +953,22 @@ class _$ReservationDetailDao extends ReservationDetailDao {
 
 class _$CleaningServiceDao extends CleaningServiceDao {
   _$CleaningServiceDao(this.database, this.changeListener)
-      : _cleaningServiceModelInsertionAdapter = InsertionAdapter(
+      : _queryAdapter = QueryAdapter(database),
+        _cleaningServiceModelInsertionAdapter = InsertionAdapter(
             database,
             'CleaningServiceModel',
+            (CleaningServiceModel item) => <String, Object?>{
+                  'id': item.id,
+                  'date': item.date,
+                  'time': item.time,
+                  'description': item.description,
+                  'staff': item.staff,
+                  'reservationDetail': item.reservationDetail
+                }),
+        _cleaningServiceModelUpdateAdapter = UpdateAdapter(
+            database,
+            'CleaningServiceModel',
+            ['id'],
             (CleaningServiceModel item) => <String, Object?>{
                   'id': item.id,
                   'date': item.date,
@@ -943,14 +982,76 @@ class _$CleaningServiceDao extends CleaningServiceDao {
 
   final StreamController<String> changeListener;
 
+  final QueryAdapter _queryAdapter;
+
   final InsertionAdapter<CleaningServiceModel>
       _cleaningServiceModelInsertionAdapter;
+
+  final UpdateAdapter<CleaningServiceModel> _cleaningServiceModelUpdateAdapter;
+
+  @override
+  Future<List<CleaningServiceModel>> getAll() async {
+    return _queryAdapter.queryList('SELECT * FROM CleaningServiceModel',
+        mapper: (Map<String, Object?> row) => CleaningServiceModel(
+            id: row['id'] as int?,
+            reservationDetail: row['reservationDetail'] as int,
+            date: row['date'] as String,
+            time: row['time'] as String?,
+            staff: row['staff'] as int?,
+            description: row['description'] as String?));
+  }
+
+  @override
+  Future<List<CleaningServiceModel>> getNew() async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM CleaningServiceModel where staff is null',
+        mapper: (Map<String, Object?> row) => CleaningServiceModel(
+            id: row['id'] as int?,
+            reservationDetail: row['reservationDetail'] as int,
+            date: row['date'] as String,
+            time: row['time'] as String?,
+            staff: row['staff'] as int?,
+            description: row['description'] as String?));
+  }
+
+  @override
+  Future<List<CleaningServiceModel>> getAOld() async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM CleaningServiceModel where staff is not null',
+        mapper: (Map<String, Object?> row) => CleaningServiceModel(
+            id: row['id'] as int?,
+            reservationDetail: row['reservationDetail'] as int,
+            date: row['date'] as String,
+            time: row['time'] as String?,
+            staff: row['staff'] as int?,
+            description: row['description'] as String?));
+  }
+
+  @override
+  Future<CleaningServiceModel?> getCSByID(int id) async {
+    return _queryAdapter.query(
+        'SELECT * FROM CleaningServiceModel where id = ?1',
+        mapper: (Map<String, Object?> row) => CleaningServiceModel(
+            id: row['id'] as int?,
+            reservationDetail: row['reservationDetail'] as int,
+            date: row['date'] as String,
+            time: row['time'] as String?,
+            staff: row['staff'] as int?,
+            description: row['description'] as String?),
+        arguments: [id]);
+  }
 
   @override
   Future<void> insertCleaningService(
       CleaningServiceModel cleaningService) async {
     await _cleaningServiceModelInsertionAdapter.insert(
         cleaningService, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<int> updateCleaningService(CleaningServiceModel cs) {
+    return _cleaningServiceModelUpdateAdapter.updateAndReturnChangedRows(
+        cs, OnConflictStrategy.abort);
   }
 }
 

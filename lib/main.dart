@@ -221,9 +221,17 @@ void dbUtil(AppDatabase db) async {
   }
 
   Staff? s2 = await db.staffDao.getStaffByID(2);
-  if (s2 == null){
-    Staff s1 = Staff(password: "1", name: "staff1", nationalId: "11", email: "aa");
-    await db.staffDao.insertStaff(s1);
+  if (s2 == null) {
+    Staff s2 =
+        Staff(password: "1", name: "staff1", nationalId: "11", email: "aa");
+    await db.staffDao.insertStaff(s2);
+  }
+
+  Staff? s3 = await db.staffDao.getStaffByID(3);
+  if (s3 == null) {
+    Staff s3 = Staff(
+        password: "1", name: "staff2", nationalId: "12", email: "aa", role: 1);
+    await db.staffDao.insertStaff(s3);
   }
 
   List<RestaurantCoffeeShop> rc1 = await db.restaurantDao.getAll();
