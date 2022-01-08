@@ -8,6 +8,7 @@ import 'package:db_hotel/screens/reservations_screen/user_reservations_screen.da
 import 'package:db_hotel/screens/reservations_screen/waiting_reservations_screen/waiting_reservations_screen.dart';
 import 'package:db_hotel/screens/restaurants_screen/user_restaurants_screen/user_restaurant_screen.dart';
 import 'package:db_hotel/screens/rich_customers_screen/rich_customers_screen.dart';
+import 'package:db_hotel/screens/rooms_screen/admin_all_rooms_screen/admin_all_rooms_screen.dart';
 import 'package:db_hotel/screens/rooms_screen/all_rooms_screen/all_rooms_screen.dart';
 import 'package:db_hotel/screens/rooms_screen/user_rooms_screen.dart';
 import 'package:db_hotel/screens/staff_list_screen/staff_list_screen.dart';
@@ -107,24 +108,24 @@ class AdminHomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              // InkWell(
-              //   onTap: () => Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //           builder: (context) =>
-              //               AllRoomsScreen(database: database))),
-              //   child: Container(
-              //     width: 300,
-              //     height: 100,
-              //     decoration: MyStyles.roundedBox,
-              //     child: Center(
-              //       child: Text(
-              //         "All Rooms",
-              //         style: MyStyles.normalText20,
-              //       ),
-              //     ),
-              //   ),
-              // ),
+              InkWell(
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            AdminAllRoomsScreen(database: database))),
+                child: Container(
+                  width: 300,
+                  height: 100,
+                  decoration: MyStyles.roundedBox,
+                  child: Center(
+                    child: Text(
+                      "Rooms",
+                      style: MyStyles.normalText20,
+                    ),
+                  ),
+                ),
+              ),
               // InkWell(
               //   onTap: () => Navigator.push(
               //       context,
