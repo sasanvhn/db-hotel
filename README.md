@@ -1,6 +1,6 @@
 # db_hotel
 
-Interface for DB project
+Interface for DB project - hotel management system 
 
 ## Getting Started
 
